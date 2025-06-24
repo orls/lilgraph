@@ -1,0 +1,142 @@
+Parser test cases for lilgraph format. 
+
+Note that adding test-cases data files in here does *not* mean they automatically get tested: you
+need to update the relevant test function's table of inputs and/or expectations. See parser_test.go.
+
+-- happy/simple-nodes.lilgraph --
+AAA
+BBB CCC
+DDD; EEE;
+-- happy/simple-nodes.whitespace-and-comments.lilgraph --
+
+    AAA      // this is a C-style-comment
+	BBB // this node should have a tab before it
+CCC
+
+/* this is a block comment, containing an otherwise-valid node:
+XXX
+        /* block comment inside a block comment */   
+        // c-style comment inside a block comment
+        # hash-comment inside a block comment
+   */
+#XXX
+# XXX
+
+DDD EEE
+
+// want some // comments in yr comments?
+//want some// comments in yr comments?
+#want some#comments in yr comments?
+// # want some comments in yr comments?
+# // want some comments in yr comments?
+//# want some comments in yr comments?
+#// want some comments in yr comments?
+
+-- happy/simple-nodes.expected.json --
+{"ast_items": [
+    {"ast_type": "node_def", "id":"AAA"},
+    {"ast_type": "node_def", "id":"BBB"},
+    {"ast_type": "node_def", "id":"CCC"},
+    {"ast_type": "node_def", "id":"DDD"},
+    {"ast_type": "node_def", "id":"EEE"}
+]}
+-- happy/simple-edges.lilgraph --
+A->B -> C
+C ----> A
+D------->E
+-- happy/simple-edges.expected.json --
+{"ast_items": [
+    {"ast_type": "edge_chain", "from": "A", "steps": [{"to": "B"}, {"to":"C"}]},
+    {"ast_type": "edge_chain", "from": "C", "steps": [{"to": "A"}]},
+    {"ast_type": "edge_chain", "from": "D", "steps": [{"to": "E"}]}
+]}
+-- dubious/simple-edges-multiline.lilgraph --
+// TODO: these are technically valid because it's easiest to write the grammar
+// this way...but I'm on the fence about it.
+A
+->B
+
+->
+C
+
+C ->
+A
+
+D
+---->
+E
+
+
+-- happy/edge-attrs.lilgraph --
+// Empty attrs ignored
+A -[]-> B
+B -[/* ... */]-> C
+
+// Only regular attrs; various seps.
+// TODO: quoted strings, plain numbers etc. Grammar is too limited right now
+C -[foo=fooval bar=barval, ]-> D
+D-----[baz=bazval,quux=quuxval]--->E
+E-[
+    foo=fooval,
+    bar=barval,
+]->F
+
+// Only the special type pseudo-attr
+F -[myedgetype]-> G
+G -[myedgetype;]-> H
+
+// Both type and regular attrs.
+
+H -[myedgetype; foo=fooval bar=barval, ]-> I
+I-----[myedgetype baz=bazval,quux=quuxval]--->J
+J-[
+    myedgetype  /*..*/
+    foo=fooval,
+    bar=barval,
+]->K
+
+
+
+-- happy/edge-attrs.expected.json --
+{"ast_items": [
+    {"ast_type": "edge_chain", "from": "A", "steps": [{"to": "B"}]},
+    {"ast_type": "edge_chain", "from": "B", "steps": [{"to": "C"}]},
+    {"ast_type": "edge_chain", "from": "C", "steps": [{"to": "D",
+        "attrs": {
+            "foo": "fooval",
+            "bar": "barval"
+        }
+        }]},
+    {"ast_type": "edge_chain", "from": "D", "steps": [{"to": "E",
+        "attrs": {
+            "baz": "bazval",
+            "quux": "quuxval"
+        }
+    }]},
+    {"ast_type": "edge_chain", "from": "E", "steps": [{"to": "F",
+        "attrs": {
+            "foo": "fooval",
+            "bar": "barval"
+        }
+    }]},
+    {"ast_type": "edge_chain", "from": "F", "steps": [{"to": "G", "type": "myedgetype"}]},
+    {"ast_type": "edge_chain", "from": "G", "steps": [{"to": "H", "type": "myedgetype"}]},
+    {"ast_type": "edge_chain", "from": "H", "steps": [{"to": "I", "type": "myedgetype",
+        "attrs": {
+            "foo": "fooval",
+            "bar": "barval"
+        }
+    }]},
+    {"ast_type": "edge_chain", "from": "I", "steps": [{"to": "J", "type": "myedgetype",
+        "attrs": {
+            "baz": "bazval",
+            "quux": "quuxval"
+        }
+    }]},
+    {"ast_type": "edge_chain", "from": "J", "steps": [{"to": "K", "type": "myedgetype",
+        "attrs": {
+            "foo": "fooval",
+            "bar": "barval"
+        }
+    }]}
+]}
