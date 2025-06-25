@@ -1,10 +1,12 @@
 package lilgraph
 
 import (
+	"bytes"
 	"cmp"
 	"errors"
 	"fmt"
 	"maps"
+	"os"
 	"slices"
 
 	"github.com/orls/lilgraph/internal/ast"
@@ -21,18 +23,27 @@ var (
 )
 
 func ParseFile(path string) (*Lilgraph, error) {
-	lex, err := lexer.NewLexerFile(path)
+	src, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	return parse(lex)
+	lexCtx := &lexer.SourceContext{Filepath: path}
+	return parse(src, lexCtx)
 }
 
-func Parse(bytes []byte) (*Lilgraph, error) {
-	return parse(lexer.NewLexer(bytes))
+func Parse(src []byte) (*Lilgraph, error) {
+	return parse(src, nil)
 }
 
-func parse(lex *lexer.Lexer) (*Lilgraph, error) {
+func parse(src []byte, lexCtx token.Context) (*Lilgraph, error) {
+	// Comments at end, without a trailing newline, can cause errs. I'm not
+	// smart enough to figure out the true way to express "newline or EOF" in
+	// the grammar, so... hack it, by tacking on a newline if needed.
+	if !bytes.HasSuffix(src, []byte("\n")) {
+		src = append(src, byte('\n'))
+	}
+	lex := lexer.NewLexer(src)
+	lex.Context = lexCtx
 	p := parser.NewParser()
 	rawAst, err := p.Parse(lex)
 	if err != nil {

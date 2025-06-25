@@ -59,6 +59,31 @@ func TestParserHappyPaths(t *testing.T) {
 	}
 }
 
+// Checks for a bug where a line-comment that ended in EOF (note: not cases ending in newline
+// *then* EOF) caused a parse err.
+func TestCommentAtEOF(t *testing.T) {
+	// (By definition, can't express these in txtar data)
+	cases := []string{
+		`// To check for a bug, this comment is right at EOF`,
+		`# To check for a bug, this comment is right at EOF`,
+		`foo // To check for a bug, this comment is right at EOF`,
+		`foo # To check for a bug, this comment is right at EOF`,
+		`foo
+		bar -> baz // To check for a bug, this comment is right at EOF`,
+		`foo
+		bar -> baz # To check for a bug, this comment is right at EOF`,
+	}
+
+	for i, inputStr := range cases {
+		t.Run(fmt.Sprintf("case#%d", i), func(t *testing.T) {
+			_, err := lilgraph.Parse([]byte(inputStr))
+			if err != nil {
+				t.Fatalf("expected comment-at-eof case %d to succeed, but got err=%v", i, err)
+			}
+		})
+	}
+}
+
 func TestCycleDetection(t *testing.T) {
 	cases := []string{
 		"bad/cyclic-1.lilgraph",
