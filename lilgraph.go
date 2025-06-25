@@ -202,6 +202,9 @@ func updateEdge(e *Edge, astStep *ast.EdgeStep) {
 }
 
 func lexicalTopoSort(nodes []*Node) error {
+	if len(nodes) == 0 {
+		return nil
+	}
 	ranks := map[*Node]int{}
 
 	var walkDf func(*Node, *Node, int, map[*Node]bool) error

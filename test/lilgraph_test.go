@@ -9,19 +9,20 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/orls/lilgraph"
+	"github.com/orls/lilgraph/internal/ast"
+	"github.com/orls/lilgraph/internal/gocc/lexer"
+	"github.com/orls/lilgraph/internal/gocc/parser"
+	"github.com/orls/lilgraph/internal/gocc/token"
 	"github.com/tidwall/jsonc"
 	"golang.org/x/tools/txtar"
 )
 
 var testCases fs.FS
-var parserCases fs.FS
 
 func TestMain(m *testing.M) {
 	testCases = loadTxtarFs("./test_cases.txtar")
-	// Re-use the parser cases too (though we're testing ast -> returned objs here)
-	parserCases = loadTxtarFs("../internal/test/parser_test_cases.txtar")
-
 	m.Run()
 }
 
@@ -36,24 +37,84 @@ func TestReadmeExample(t *testing.T) {
 	}
 }
 
-func TestParserHappyPaths(t *testing.T) {
-	// Re-use some of the simple AST parsing happy-path test cases: these ones are all expected to
-	// yield valid final graph objs (though note that's not true for all ASTSs).
-	cases := []string{
-		"happy/simple-nodes.lilgraph",
-		"happy/simple-edges.lilgraph",
-		"dubious/simple-edges-multiline.lilgraph",
-		"happy/edge-attrs.lilgraph",
+func TestParseEmpty(t *testing.T) {
+	cases := map[string][]byte{
+		"nilbytes":     nil,
+		"emptybytes":   []byte(""),
+		"whitespaces":  []byte("  \n\n\t \n \t\n\t"),
+		"onlycomments": []byte("\n  // this page\n #intentionally\n\t/*left \nblank\n*/"),
 	}
-	for _, inputPath := range cases {
-		t.Run(inputPath, func(t *testing.T) {
-			input := readFsFile(t, parserCases, inputPath)
+	for name, input := range cases {
+		t.Run(name, func(t *testing.T) {
+			// Check at internal AST level...
+			lex := lexer.NewLexer(input)
+			p := parser.NewParser()
+			parseResult, err := p.Parse(lex)
+			if err != nil {
+				t.Fatalf("expected parsing AST from empty file to succeed, but got err: %v", err)
+			}
+			astG, ok := parseResult.(*ast.Graph)
+			if !ok {
+				t.Fatalf("expected top-level obj from AST parser to be an *ast.Graph, but got %T", astG)
+			}
+			if len(astG.AstItems) != 0 {
+				t.Fatalf("expected parsing empty file to produce empty AST list, but got %d items", len(astG.AstItems))
+			}
+			// ..and at post-AST semantics level, via public api
 			g, err := lilgraph.Parse(input)
 			if err != nil {
-				t.Fatalf("expected graph build for parser's txtar case '%s' to succeed, but got err=%v", inputPath, err)
+				t.Fatalf("expected building graph from empty file to succeed, but got err: %v", err)
+			}
+			if !ok {
+				t.Fatalf("expected top-level obj from public parser to be an *lilgraph.Graph, but got %T", g)
+			}
+			if len(g.Nodes) != 0 || len(g.Edges) != 0 {
+				t.Fatalf("expected parsing empty file to produce empty graph, but got %d nodes/%d edges", len(g.Nodes), len(g.Edges))
+			}
+		})
+	}
+}
+
+// TestParserHappyPaths tests examples that should parse successfuly to a know AST, and also then
+// produce valid graph structure per chosen semantics.
+func TestParserHappyPaths(t *testing.T) {
+	cases := map[string]string{
+		"happy/simple-nodes.lilgraph":             "happy/simple-nodes.expected.json",
+		"happy/simple-edges.lilgraph":             "happy/simple-edges.expected.json",
+		"dubious/simple-edges-multiline.lilgraph": "happy/simple-edges.expected.json",
+		"happy/edge-attrs.lilgraph":               "happy/edge-attrs.expected.json",
+	}
+	for inputPath, expectAstJsonPath := range cases {
+		t.Run(inputPath, func(t *testing.T) {
+			input := readFsFile(t, testCases, inputPath)
+
+			// Check at internal AST level...
+			expectJson := readFsFile(t, testCases, expectAstJsonPath)
+			var expectAst *ast.Graph
+			if err := json.Unmarshal(expectJson, &expectAst); err != nil {
+				t.Fatalf("failed unmarshaling test expectation AST from '%s': %v", expectAstJsonPath, err)
+			}
+			lex := lexer.NewLexer(input)
+			p := parser.NewParser()
+			parseResult, err := p.Parse(lex)
+			if err != nil {
+				t.Fatalf("expected parsing '%s' to succeed, but got err: %v", inputPath, err)
+			}
+			astG, ok := parseResult.(*ast.Graph)
+			if !ok {
+				t.Fatalf("expected top-level obj from parser to be an *ast.Graph, but got %T", parseResult)
+			}
+			if diff := cmp.Diff(expectAst, astG, ignorePositions()...); diff != "" {
+				t.Errorf("parsing '%s' did not produce expected AST:\n%s", inputPath, diff)
+			}
+
+			// ..and at post-AST semantics level, via public api
+			g, err := lilgraph.Parse(input)
+			if err != nil {
+				t.Fatalf("expected public parse to succeed, but got err=%v", err)
 			}
 			if g == nil {
-				t.Fatalf("expected graph build for parser's txtar case '%s' to produce graph, but got  nil", inputPath)
+				t.Fatalf("expected public parse to produce graph, but got nil")
 			}
 		})
 	}
@@ -66,12 +127,16 @@ func TestCommentAtEOF(t *testing.T) {
 	cases := []string{
 		`// To check for a bug, this comment is right at EOF`,
 		`# To check for a bug, this comment is right at EOF`,
+		`/*To check for a bug, this comment is right at EOF*/`,
 		`foo // To check for a bug, this comment is right at EOF`,
 		`foo # To check for a bug, this comment is right at EOF`,
+		`foo /*To check for a bug, this comment is right at EOF*/`,
 		`foo
 		bar -> baz // To check for a bug, this comment is right at EOF`,
 		`foo
 		bar -> baz # To check for a bug, this comment is right at EOF`,
+		`foo
+		bar -> baz /*To check for a bug, this comment is right at EOF*/`,
 	}
 
 	for i, inputStr := range cases {
@@ -129,6 +194,12 @@ func TestTopoOrder(t *testing.T) {
 				t.Fatalf("wrong sort order for '%s':\n%s", inputPath, diff)
 			}
 		})
+	}
+}
+
+func ignorePositions() []cmp.Option {
+	return []cmp.Option{
+		cmpopts.IgnoreTypes(token.Pos{}),
 	}
 }
 
