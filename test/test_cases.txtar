@@ -1,0 +1,67 @@
+-- bad/cyclic-1.lilgraph --
+// no apex node
+a -> b -> c -> a
+
+-- bad/cyclic-2.lilgraph --
+// Same as cyclic-1.lilgraph, just mixed-up & non-chained form.
+c -> a
+a -> b
+b -> c
+
+-- bad/cyclic-3.lilgraph --
+// Has a valid apex node, but then has a later cycle .
+a -> b -> c -> b
+
+-- bad/cyclic-4.lilgraph --
+// Has several valid apex nodes, but has an eventual cycle in the middle
+a -> b           // apex, no cycle
+c -> d           // apex, no cycle
+e -> f -> g -> h // apex, no cycle yet...
+h -> f           // ... cycle!
+h -> i -> j      // non-apex, continues a path from above
+k -> l           // apex, no cycle
+
+-- happy/node-ordering.lilgraph --
+// Nodes are returned in rank order; within a rank, nodes stay in the order of their ID first
+// textual appearance.
+
+c1
+
+a -> b1 -> c2
+
+b2
+b3
+
+b3 -> c3
+a -> b3
+a -> b2
+
+-- happy/node-ordering.expected-order.json --
+[
+    "c1", // rank 0
+    "a",  // rank 0
+    "b2", // rank 0
+    "b1", // rank 1
+    "b3", // rank 1
+    "c2", // rank 2
+    "c3", // rank 2
+]
+
+-- happy/multirank.lilgraph --
+// x and e end up getting pushed several ranks back from their first appearances
+a -> x
+a -> b -> c -> d
+a -> e
+b -> x
+c -> x
+d -> x -> e
+
+-- happy/multirank.expected-order.json --
+[
+    "a",
+    "b",
+    "c",
+    "d",
+    "x",
+    "e"
+]

@@ -4,6 +4,7 @@ go 1.24
 
 require (
 	github.com/google/go-cmp v0.7.0
+	github.com/tidwall/jsonc v0.3.2
 	golang.org/x/tools v0.26.0
 )
 
