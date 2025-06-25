@@ -27,6 +27,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestReadmeExample(t *testing.T) {
+	// Acts as a test of ParseFile public API method, as well as being the README content
 	inputPath := "./readme_example.lilgraph"
 	g, err := lilgraph.ParseFile(inputPath)
 	if err != nil {
@@ -117,6 +118,60 @@ func TestParserHappyPaths(t *testing.T) {
 				t.Fatalf("expected public parse to produce graph, but got nil")
 			}
 		})
+	}
+}
+
+func TestNodeAttrs(t *testing.T) {
+	inputPath := "happy/node-attrs.lilgraph"
+	input := readFsFile(t, testCases, inputPath)
+	g, err := lilgraph.Parse(input)
+	if err != nil {
+		t.Fatalf("expected node-attr example to succeed, but got err=%v", err)
+	}
+	if g == nil {
+		t.Fatalf("expected node-attr example to produce graph obj, but got nil")
+	}
+
+	for i, id := range []string{"A", "B", "C", "D"} {
+		n := g.Nodes[i]
+		if n == nil {
+			t.Fatalf("expected node '%s' to exist in graph, but it does not", id)
+		}
+		if n.Id != id {
+			t.Fatalf("expected node '%s' to have id '%s', but got '%s'", id, id, n.Id)
+		}
+		if n.Type != "sometype" {
+			t.Fatalf("expected node '%s' to have type='sometype', but got '%s'", id, n.Type)
+		}
+	}
+
+	dNode := g.Nodes[3]
+	if dNode.Attrs["foo"] != "fooval" {
+		t.Fatalf("node D attr 'foo' did not match expectation")
+	}
+	if dNode.Attrs["bar"] != "barval" {
+		t.Fatalf("node D attr 'foo' did not match expectation")
+	}
+
+	expectMultilineVal := `This is a quoted string that
+spans
+multiple
+lines, but no quotes.`
+
+	expectFancyVal := `This is a quoted string that also
+spans multiple lines.
+It also has some leading/trailing whitespace:
+    <- 4 spaces ->    
+	<- 1 tab ->	
+It can contain "double-quotes" (if escaped) and 'single quotes' and backticks ` + "``" + `
+and literal backslashes (¯\_(ツ)_/¯) (incl doubled: \\)
+and unicode もしもし
+and emoji 🥳`
+	if diff := cmp.Diff(expectMultilineVal, dNode.Attrs["multiline"]); diff != "" {
+		t.Fatalf("node D attr 'multiline' did not match expectation:\n%s", diff)
+	}
+	if diff := cmp.Diff(expectFancyVal, dNode.Attrs["fancy"]); diff != "" {
+		t.Fatalf("node D attr 'fancy' did not match expectation:\n%s", diff)
 	}
 }
 

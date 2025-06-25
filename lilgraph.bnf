@@ -18,7 +18,56 @@ _id_letter : _ascii_letter | '_' ;
 
 _ascii_digit : '0' - '9' ;
 
-id : _id_letter { _id_letter | _ascii_digit } ;
+_id : _id_letter { _id_letter | _ascii_digit } ;
+id : _id;
+
+/*
+    Attributes
+    ----------
+
+    An attribute value can be:
+
+    1) An ID
+    2) A numeric literal (but, note that ALL attrs are emitted as strings)
+    3) A quoted string.
+
+    Following DOT, in quoted strings the only escaped character is double-quote
+    ("). That is, in quoted strings, the dyad \" is converted to "; all other
+    characters are left unchanged. In particular, \\ remains \\.
+
+    But unlike DOT (iiuc), strings can span multiple lines without any special
+    newline wrangling.
+*/
+
+_ascii_digits : _ascii_digit { _ascii_digit };
+numeric_literal
+    : [ '-' ] _ascii_digits [ '.' _ascii_digits ]
+    | [ '-' ] '.' _ascii_digits
+    ;
+
+// An arbitrary ASCII character except null (0x00), double quote (0x22) and
+// backslash (0x5C).
+_ascii_char
+    // skip null (0x00)
+    : '\x01' - '\x21'
+    // skip double quote (0x22)
+    | '\x23' - '\x5B'
+    // skip backslash (0x5C)
+    | '\x5D' - '\x7F'
+    ;
+
+_unicode_char
+    : _ascii_char
+    | '\u0080' - '\uFFFC'
+    // skip invalid code point (\uFFFD)
+    | '\uFFFE' - '\U0010FFFF'
+    ;
+
+// TODO: copied this from DOT. Given what DOT claims re no other escapes, what's going on here?
+// E.g. why does it need double-backslash specialness?
+_escaped_char : '\\' ( _unicode_char | '"' | '\\' ) ;
+_char         : _unicode_char | _escaped_char ;
+quoted_string : '"' { _char } '"' ;
 
 /*
     Comments & Whitespace
@@ -106,8 +155,8 @@ Attr
     | id "=" AttrVal ","                                    << ast.NewAttrs($0, $2) >>
     ;
 
-/* TODO: support quoted strings, plain numbers etc for attrs. This is a short-term
-hack while I get the grammar superstructure up and running */
 AttrVal
-	: id 													<< $0, nil >>
-	;
+    : id                                                    << $0, nil >>
+    | numeric_literal                                       << $0, nil >>
+    | quoted_string                                         << ast.Unquote($0) >>
+    ;

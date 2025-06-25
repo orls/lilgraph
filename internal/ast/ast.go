@@ -3,6 +3,7 @@ package ast
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/orls/lilgraph/internal/gocc/token"
 )
@@ -249,9 +250,7 @@ func NewAttrs(kPP, vPP ParserProduct) (Attrs, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed getting attr key name: %v", err)
 	}
-	// TODO: this needs to be more complicated in the case of quoted strings. But grammar isn't
-	// there yet.
-	v, _, err := getTokVal(vPP)
+	v, err := getTokOrLiteralStr(vPP)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting value for attr '%s': %v", k, err)
 	}
@@ -260,6 +259,17 @@ func NewAttrs(kPP, vPP ParserProduct) (Attrs, error) {
 		Value: v,
 		Pos:   pos,
 	}}, nil
+}
+
+func Unquote(quotedValPP ParserProduct) (string, error) {
+	quotedVal, _, err := getTokVal(quotedValPP)
+	if err != nil {
+		return "", err
+	}
+	val := quotedVal[1 : len(quotedVal)-1]
+	// un-escape any quotes.
+	// (No other escape sequences are supported, to keep things simple)
+	return strings.ReplaceAll(val, `\"`, `"`), nil
 }
 
 // getTokVal is a util for getting string values from parser tokens. Mostly a noise-saver for type

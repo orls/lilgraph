@@ -299,4 +299,24 @@ var productionsTable = ProdTab{
 			return X[0], nil
 		},
 	},
+	ProdTabEntry{
+		String: `AttrVal : numeric_literal	<< X[0], nil >>`,
+		Id:         "AttrVal",
+		NTType:     9,
+		Index:      28,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
+			return X[0], nil
+		},
+	},
+	ProdTabEntry{
+		String: `AttrVal : quoted_string	<< ast.Unquote(X[0]) >>`,
+		Id:         "AttrVal",
+		NTType:     9,
+		Index:      29,
+		NumSymbols: 1,
+		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
+			return ast.Unquote(X[0])
+		},
+	},
 }

@@ -67,6 +67,45 @@ D
 ---->
 E
 
+-- happy/node-attrs.lilgraph --
+A [sometype]
+A [sometype;]
+A []
+A
+
+B [sometype foo=fooval]
+B [sometype; foo=fooval]
+B [foo=fooval]
+B
+
+C [
+    sometype
+    foo=fooval
+    bar=barval,
+]
+
+D [
+    sometype;
+    foo=fooval,
+    bar=barval
+    multiline="This is a quoted string that
+spans
+multiple
+lines, but no quotes."
+    fancy="This is a quoted string that also
+spans multiple lines.
+It also has some leading/trailing whitespace:
+    <- 4 spaces ->    
+	<- 1 tab ->	
+It can contain \"double-quotes\" (if escaped) and 'single quotes' and backticks ``
+and literal backslashes (¯\_(ツ)_/¯) (incl doubled: \\)
+and unicode もしもし
+and emoji 🥳"
+]
+
+E [ a=0001234567 b=123.123 c=.123 e=-123 f=-123.123 g=-.123 ]
+
+
 
 -- happy/edge-attrs.lilgraph --
 // Empty attrs ignored

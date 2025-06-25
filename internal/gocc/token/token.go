@@ -148,6 +148,8 @@ var TokMap = TokenMap{
 		"edge_attr_close",
 		"=",
 		",",
+		"numeric_literal",
+		"quoted_string",
 	},
 
 	idMap: map[string]Type{
@@ -163,5 +165,7 @@ var TokMap = TokenMap{
 		"edge_attr_close": 9,
 		"=":               10,
 		",":               11,
+		"numeric_literal": 12,
+		"quoted_string":   13,
 	},
 }

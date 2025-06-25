@@ -402,7 +402,7 @@ var gotoTab = gotoTable{
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		43, // AttrItems
+		45, // AttrItems
 		22, // Attr
 		-1, // AttrVal
 	},
@@ -428,7 +428,7 @@ var gotoTab = gotoTable{
 		-1, // TopLevelStmt
 		-1, // AttrItems
 		-1, // Attr
-		47, // AttrVal
+		49, // AttrVal
 	},
 	gotoRow{ // S35
 		-1, // S'
@@ -535,7 +535,7 @@ var gotoTab = gotoTable{
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		36, // Attr
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S44
@@ -559,7 +559,7 @@ var gotoTab = gotoTable{
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
+		36, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S46
@@ -671,6 +671,54 @@ var gotoTab = gotoTable{
 		-1, // AttrVal
 	},
 	gotoRow{ // S55
+		-1, // S'
+		-1, // TopLevelContent
+		-1, // TopLevelDeclList
+		-1, // NodeDecl
+		-1, // EdgeRHS
+		-1, // EdgeDecl
+		-1, // TopLevelStmt
+		-1, // AttrItems
+		-1, // Attr
+		-1, // AttrVal
+	},
+	gotoRow{ // S56
+		-1, // S'
+		-1, // TopLevelContent
+		-1, // TopLevelDeclList
+		-1, // NodeDecl
+		-1, // EdgeRHS
+		-1, // EdgeDecl
+		-1, // TopLevelStmt
+		-1, // AttrItems
+		-1, // Attr
+		-1, // AttrVal
+	},
+	gotoRow{ // S57
+		-1, // S'
+		-1, // TopLevelContent
+		-1, // TopLevelDeclList
+		-1, // NodeDecl
+		-1, // EdgeRHS
+		-1, // EdgeDecl
+		-1, // TopLevelStmt
+		-1, // AttrItems
+		-1, // Attr
+		-1, // AttrVal
+	},
+	gotoRow{ // S58
+		-1, // S'
+		-1, // TopLevelContent
+		-1, // TopLevelDeclList
+		-1, // NodeDecl
+		-1, // EdgeRHS
+		-1, // EdgeDecl
+		-1, // TopLevelStmt
+		-1, // AttrItems
+		-1, // Attr
+		-1, // AttrVal
+	},
+	gotoRow{ // S59
 		-1, // S'
 		-1, // TopLevelContent
 		-1, // TopLevelDeclList
