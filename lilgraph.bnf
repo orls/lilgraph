@@ -120,6 +120,8 @@ NodeDecl
     | id "[" id AttrItems "]"                               << ast.NewNode($0, $2, $3) >>
     | id "[" id ";" AttrItems "]"                           << ast.NewNode($0, $2, $4) >>
     | id "[" id "]"                                         << ast.NewNode($0, $2, nil) >>
+    | id "[" id ";" "]"                                     << ast.NewNode($0, $2, nil) >>
+    | id "[" "]"                                            << ast.NewNode($0, "", nil) >>
     | id                                                    << ast.NewNode($0, "", nil) >>
     ;
 

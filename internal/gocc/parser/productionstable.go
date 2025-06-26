@@ -110,10 +110,30 @@ var productionsTable = ProdTab{
 		},
 	},
 	ProdTabEntry{
-		String: `NodeDecl : id	<< ast.NewNode(X[0], "", nil) >>`,
+		String: `NodeDecl : id "[" id ";" "]"	<< ast.NewNode(X[0], X[2], nil) >>`,
 		Id:         "NodeDecl",
 		NTType:     3,
 		Index:      9,
+		NumSymbols: 5,
+		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
+			return ast.NewNode(X[0], X[2], nil)
+		},
+	},
+	ProdTabEntry{
+		String: `NodeDecl : id "[" "]"	<< ast.NewNode(X[0], "", nil) >>`,
+		Id:         "NodeDecl",
+		NTType:     3,
+		Index:      10,
+		NumSymbols: 3,
+		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
+			return ast.NewNode(X[0], "", nil)
+		},
+	},
+	ProdTabEntry{
+		String: `NodeDecl : id	<< ast.NewNode(X[0], "", nil) >>`,
+		Id:         "NodeDecl",
+		NTType:     3,
+		Index:      11,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewNode(X[0], "", nil)
@@ -123,7 +143,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edgearrow id	<< ast.NewEdgeStep(X[0], X[1], "", nil) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      10,
+		Index:      12,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[1], "", nil)
@@ -133,7 +153,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open edge_attr_close id	<< ast.NewEdgeStep(X[0], X[2], "", nil) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      11,
+		Index:      13,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[2], "", nil)
@@ -143,7 +163,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open AttrItems edge_attr_close id	<< ast.NewEdgeStep(X[0], X[3], "", X[1]) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      12,
+		Index:      14,
 		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[3], "", X[1])
@@ -153,7 +173,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open id edge_attr_close id	<< ast.NewEdgeStep(X[0], X[3], X[1], nil) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      13,
+		Index:      15,
 		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[3], X[1], nil)
@@ -163,7 +183,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open id ";" edge_attr_close id	<< ast.NewEdgeStep(X[0], X[4], X[1], nil) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      14,
+		Index:      16,
 		NumSymbols: 5,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[4], X[1], nil)
@@ -173,7 +193,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open id AttrItems edge_attr_close id	<< ast.NewEdgeStep(X[0], X[4], X[1], X[2]) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      15,
+		Index:      17,
 		NumSymbols: 5,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[4], X[1], X[2])
@@ -183,7 +203,7 @@ var productionsTable = ProdTab{
 		String: `EdgeRHS : edge_attr_open id ";" AttrItems edge_attr_close id	<< ast.NewEdgeStep(X[0], X[5], X[1], X[3]) >>`,
 		Id:         "EdgeRHS",
 		NTType:     4,
-		Index:      16,
+		Index:      18,
 		NumSymbols: 6,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeStep(X[0], X[5], X[1], X[3])
@@ -193,7 +213,7 @@ var productionsTable = ProdTab{
 		String: `EdgeDecl : id EdgeRHS	<< ast.NewEdgeChain(X[0],X[1]) >>`,
 		Id:         "EdgeDecl",
 		NTType:     5,
-		Index:      17,
+		Index:      19,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewEdgeChain(X[0],X[1])
@@ -203,7 +223,7 @@ var productionsTable = ProdTab{
 		String: `EdgeDecl : EdgeDecl EdgeRHS	<< ast.ExtendEdgeChain(X[0],X[1]) >>`,
 		Id:         "EdgeDecl",
 		NTType:     5,
-		Index:      18,
+		Index:      20,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.ExtendEdgeChain(X[0],X[1])
@@ -213,7 +233,7 @@ var productionsTable = ProdTab{
 		String: `TopLevelStmt : EdgeDecl	<<  >>`,
 		Id:         "TopLevelStmt",
 		NTType:     6,
-		Index:      19,
+		Index:      21,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -223,7 +243,7 @@ var productionsTable = ProdTab{
 		String: `TopLevelStmt : EdgeDecl ";"	<<  >>`,
 		Id:         "TopLevelStmt",
 		NTType:     6,
-		Index:      20,
+		Index:      22,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -233,7 +253,7 @@ var productionsTable = ProdTab{
 		String: `TopLevelStmt : NodeDecl	<<  >>`,
 		Id:         "TopLevelStmt",
 		NTType:     6,
-		Index:      21,
+		Index:      23,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -243,7 +263,7 @@ var productionsTable = ProdTab{
 		String: `TopLevelStmt : NodeDecl ";"	<<  >>`,
 		Id:         "TopLevelStmt",
 		NTType:     6,
-		Index:      22,
+		Index:      24,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -253,7 +273,7 @@ var productionsTable = ProdTab{
 		String: `AttrItems : Attr	<< X[0], nil >>`,
 		Id:         "AttrItems",
 		NTType:     7,
-		Index:      23,
+		Index:      25,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -263,7 +283,7 @@ var productionsTable = ProdTab{
 		String: `AttrItems : AttrItems Attr	<< ast.MergeAttrs(X[0], X[1]) >>`,
 		Id:         "AttrItems",
 		NTType:     7,
-		Index:      24,
+		Index:      26,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.MergeAttrs(X[0], X[1])
@@ -273,7 +293,7 @@ var productionsTable = ProdTab{
 		String: `Attr : id "=" AttrVal	<< ast.NewAttrs(X[0], X[2]) >>`,
 		Id:         "Attr",
 		NTType:     8,
-		Index:      25,
+		Index:      27,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewAttrs(X[0], X[2])
@@ -283,7 +303,7 @@ var productionsTable = ProdTab{
 		String: `Attr : id "=" AttrVal ","	<< ast.NewAttrs(X[0], X[2]) >>`,
 		Id:         "Attr",
 		NTType:     8,
-		Index:      26,
+		Index:      28,
 		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.NewAttrs(X[0], X[2])
@@ -293,7 +313,7 @@ var productionsTable = ProdTab{
 		String: `AttrVal : id	<< X[0], nil >>`,
 		Id:         "AttrVal",
 		NTType:     9,
-		Index:      27,
+		Index:      29,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -303,7 +323,7 @@ var productionsTable = ProdTab{
 		String: `AttrVal : numeric_literal	<< X[0], nil >>`,
 		Id:         "AttrVal",
 		NTType:     9,
-		Index:      28,
+		Index:      30,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return X[0], nil
@@ -313,7 +333,7 @@ var productionsTable = ProdTab{
 		String: `AttrVal : quoted_string	<< ast.Unquote(X[0]) >>`,
 		Id:         "AttrVal",
 		NTType:     9,
-		Index:      29,
+		Index:      31,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
 			return ast.Unquote(X[0])
