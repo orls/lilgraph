@@ -214,9 +214,16 @@ func TestCycleDetection(t *testing.T) {
 	for _, inputPath := range cases {
 		t.Run(inputPath, func(t *testing.T) {
 			input := readFsFile(t, testCases, inputPath)
-			_, err := lilgraph.Parse(input)
+			g, err := lilgraph.Parse(input)
+			if err != nil {
+				t.Fatalf("expected graph build for %s to succeed, but saw err=%v", inputPath, err)
+			}
+			if g == nil {
+				t.Fatalf("expected graph build for %s to produce graph obj, but got nil", inputPath)
+			}
+			err = g.SortTopo()
 			if !errors.Is(err, lilgraph.ErrCyclic) {
-				t.Fatalf("expected graph build for %s to fail with ErrCyclic, but instead saw err=%v", inputPath, err)
+				t.Fatalf("expected topo-sort for %s to fail with ErrCyclic, but instead saw err=%v", inputPath, err)
 			}
 		})
 	}
@@ -238,7 +245,14 @@ func TestTopoOrder(t *testing.T) {
 
 			g, err := lilgraph.Parse(input)
 			if err != nil {
-				t.Fatalf("expected graph build for '%s' to succeed, but got err=%v", inputPath, err)
+				t.Fatalf("expected graph build for %s to succeed, but saw err=%v", inputPath, err)
+			}
+			if g == nil {
+				t.Fatalf("expected graph build for %s to produce graph obj, but got nil", inputPath)
+			}
+
+			if err = g.SortTopo(); err != nil {
+				t.Fatalf("expected top-sorting graph '%s' to succeed, but got err=%v", inputPath, err)
 			}
 
 			actual := []string{}

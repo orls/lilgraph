@@ -63,6 +63,10 @@ type Lilgraph struct {
 	Edges []*Edge
 }
 
+func (g *Lilgraph) SortTopo() error {
+	return lexicalTopoSort(g.Nodes)
+}
+
 type Node struct {
 	Id        string
 	Type      string
@@ -153,11 +157,6 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 	}
 	g.Nodes = lexOrder
 	g.Edges = slices.Collect(maps.Values(edgesById))
-
-	// Force topo order, and hence acyclic too
-	if err := lexicalTopoSort(g.Nodes); err != nil {
-		return nil, err
-	}
 
 	return g, nil
 }
