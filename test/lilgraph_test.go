@@ -204,6 +204,15 @@ func TestCommentAtEOF(t *testing.T) {
 	}
 }
 
+func TestLoopsPrevented(t *testing.T) {
+	inputPath := "bad/self-loop.lilgraph"
+	input := readFsFile(t, testCases, inputPath)
+	_, err := lilgraph.Parse(input)
+	if !errors.Is(err, lilgraph.ErrLoop) {
+		t.Fatalf("expected self-loop case to fail with ErrLoop,  got err=%v", err)
+	}
+}
+
 func TestCycleDetection(t *testing.T) {
 	cases := []string{
 		"bad/cyclic-1.lilgraph",

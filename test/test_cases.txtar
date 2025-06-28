@@ -67,6 +67,10 @@ D
 ---->
 E
 
+-- bad/self-loop.lilgraph --
+a -> b -> c
+b -> b
+
 -- happy/node-attrs.lilgraph --
 A [sometype]
 A [sometype;]

@@ -17,6 +17,7 @@ import (
 
 var (
 	ErrParseFail    = errors.New("failed parsing")
+	ErrLoop         = errors.New("cannot create edge from a node to itself")
 	ErrBadParseType = errors.New("unexpected parser result type")
 	ErrTypeChange   = errors.New("nodes cannot be redefined with a different type")
 	ErrCyclic       = errors.New("graph is cyclic")
@@ -134,6 +135,14 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 				to := upsertNodeId(step.To, step.ToPos)
 				edgeId := edgeIdentity{from: from, to: to, typ: step.Type}
 
+				if from == to {
+					return nil, fmt.Errorf(
+						"%w: edge at %s forms a loop from '%s' to itself, which is not allowed",
+						ErrLoop,
+						item.Pos,
+						from.Id,
+					)
+				}
 				if e, ok := edgesById[edgeId]; ok {
 					updateEdge(e, step)
 				} else {
