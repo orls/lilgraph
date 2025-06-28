@@ -5,7 +5,7 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
-	"maps"
+	"iter"
 	"os"
 	"slices"
 
@@ -60,33 +60,163 @@ func parse(src []byte, lexCtx token.Context) (*Lilgraph, error) {
 type Attrs map[string]string
 
 type Lilgraph struct {
-	Nodes []*Node
-	Edges []*Edge
+	nodes []*Node
+	edges []*Edge
+
+	nodesById map[string]*Node
+	edgesById map[edgeIdentity]*Edge
+}
+
+func NewGraph() *Lilgraph {
+	return &Lilgraph{
+		nodes:     []*Node{},
+		edges:     []*Edge{},
+		nodesById: map[string]*Node{},
+		edgesById: map[edgeIdentity]*Edge{},
+	}
 }
 
 func (g *Lilgraph) SortTopo() error {
-	return lexicalTopoSort(g.Nodes)
+	return lexicalTopoSort(g.nodes)
+}
+
+func (g *Lilgraph) Find(id string) *Node {
+	return g.nodesById[id]
+}
+
+func (g *Lilgraph) Nodes() iter.Seq[*Node] {
+	return slices.Values(g.nodes)
+}
+
+func (g *Lilgraph) Edges() iter.Seq[*Edge] {
+	return slices.Values(g.edges)
+}
+
+func (g *Lilgraph) AddNode(id string, typ string) (*Node, bool, error) {
+	if n, ok := g.nodesById[id]; ok {
+		if typ != "" {
+			if n.typ != "" && n.typ != typ {
+				return nil, false, fmt.Errorf(
+					"%w: node '%s' already has type '%s'",
+					ErrTypeChange,
+					n.id,
+					n.typ,
+				)
+			}
+			n.typ = typ
+		}
+		return n, true, nil
+	}
+	n := &Node{id: id, typ: typ}
+	g.nodes = append(g.nodes, n)
+	g.nodesById[id] = n
+	return n, false, nil
+}
+
+func (g *Lilgraph) FindEdges(from *Node, to *Node) iter.Seq[*Edge] {
+	return func(yield func(*Edge) bool) {
+		for _, e := range from.edgesFrom {
+			if e.to == to {
+				if !yield(e) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func (g *Lilgraph) FindEdge(from *Node, to *Node, edgeType string) (*Edge, bool) {
+	e, ok := g.edgesById[edgeIdentity{from, to, edgeType}]
+	return e, ok
+}
+
+func (g *Lilgraph) AddEdge(from *Node, to *Node, edgeType string) (*Edge, bool, error) {
+	if from == to {
+		return nil, false, ErrLoop
+	}
+	id := edgeIdentity{from, to, edgeType}
+	e, ok := g.edgesById[id]
+	if !ok {
+		e = &Edge{from: from, to: to, typ: edgeType}
+		g.edges = append(g.edges, e)
+		g.edgesById[id] = e
+		from.edgesFrom = append(from.edgesFrom, e)
+		to.edgesTo = append(to.edgesTo, e)
+	}
+	return e, ok, nil
+}
+
+func (g *Lilgraph) DeleteNode(n *Node) bool {
+	i := slices.Index(g.nodes, n)
+	if i < 0 {
+		return false
+	}
+	g.nodes = slices.Delete(g.nodes, i, i+1)
+	delete(g.nodesById, n.id)
+	for i, e := range n.edgesFrom {
+		e.from = nil
+		n.edgesFrom[i] = nil
+		g.deleteEdge(e, false, true)
+	}
+	for i, e := range n.edgesTo {
+		e.to = nil
+		n.edgesTo[i] = nil
+		g.deleteEdge(e, true, false)
+	}
+	n.edgesFrom = nil
+	n.edgesTo = nil
+	return true
+}
+
+func (g *Lilgraph) DeleteEdge(e *Edge) bool {
+	return g.deleteEdge(e, true, true)
+}
+
+func (g *Lilgraph) deleteEdge(e *Edge, purgeFrom, purgeTo bool) bool {
+	i := slices.Index(g.edges, e)
+	if i < 0 {
+		return false
+	}
+	g.edges = slices.Delete(g.edges, i, i+1)
+	delete(g.edgesById, edgeIdentity{from: e.from, to: e.to, typ: e.typ})
+	delFn := func(other *Edge) bool { return e == other }
+	if purgeFrom {
+		e.from.edgesFrom = slices.DeleteFunc(e.from.edgesFrom, delFn)
+	}
+	if purgeTo {
+		e.to.edgesTo = slices.DeleteFunc(e.to.edgesTo, delFn)
+	}
+	return true
 }
 
 type Node struct {
-	Id        string
-	Type      string
+	id        string
+	typ       string
 	Attrs     Attrs
-	EdgesFrom []*Edge
-	EdgesTo   []*Edge
+	edgesFrom []*Edge
+	edgesTo   []*Edge
 
 	firstPos    token.Pos
 	typeFromPos *token.Pos
 }
 
+func (n *Node) Id() string                 { return n.id }
+func (n *Node) Type() string               { return n.typ }
+func (n *Node) EdgesFrom() iter.Seq[*Edge] { return slices.Values(n.edgesFrom) }
+func (n *Node) EdgesTo() iter.Seq[*Edge]   { return slices.Values(n.edgesTo) }
+
 type Edge struct {
-	Type  string
+	typ   string
 	Attrs Attrs
-	From  *Node
-	To    *Node
+	from  *Node
+	to    *Node
 
 	pos token.Pos
 }
+
+func (e *Edge) Type() string { return e.typ }
+func (e *Edge) From() *Node  { return e.from }
+func (e *Edge) To() *Node    { return e.to }
 
 type edgeIdentity struct {
 	from *Node
@@ -96,96 +226,80 @@ type edgeIdentity struct {
 
 func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 	g := &Lilgraph{
-		Nodes: []*Node{},
-		Edges: []*Edge{},
+		nodes:     []*Node{},
+		edges:     []*Edge{},
+		nodesById: map[string]*Node{},
+		edgesById: map[edgeIdentity]*Edge{},
 	}
 
-	lexOrder := []*Node{}
-	nodesById := map[string]*Node{}
-	edgesById := map[edgeIdentity]*Edge{}
-	edgesByFrom := map[*Node][]*Edge{}
-	edgesByTo := map[*Node][]*Edge{}
-
-	upsertNodeId := func(id string, pos token.Pos) *Node {
-		if n, ok := nodesById[id]; ok {
-			return n
+	upsertNodeFromAst := func(id string, pos token.Pos, typ string) (*Node, error) {
+		n, existed, err := g.AddNode(id, typ)
+		if err != nil {
+			return nil, err
 		}
-		n := &Node{Id: id, firstPos: pos}
-		lexOrder = append(lexOrder, n)
-		nodesById[id] = n
-		return n
-	}
-
-	upsertNodeDeclAst := func(astN *ast.Node) error {
-		n := upsertNodeId(astN.Id, astN.Pos)
-		return updateNode(n, astN)
+		if !existed {
+			n.firstPos = pos
+		}
+		if n.typeFromPos == nil && typ != "" {
+			// ...then this is the decl that's first defining the type.
+			n.typeFromPos = &pos
+		}
+		return n, nil
 	}
 
 	for _, rawItem := range astGraph.AstItems {
 		switch item := rawItem.(type) {
 
 		case *ast.Node:
-			if err := upsertNodeDeclAst(item); err != nil {
-				return nil, err
-			}
-
-		case *ast.EdgeChain:
-			from := upsertNodeId(item.From, item.Pos)
-			for _, step := range item.Steps {
-				to := upsertNodeId(step.To, step.ToPos)
-				edgeId := edgeIdentity{from: from, to: to, typ: step.Type}
-
-				if from == to {
-					return nil, fmt.Errorf(
-						"%w: edge at %s forms a loop from '%s' to itself, which is not allowed",
-						ErrLoop,
+			n, err := upsertNodeFromAst(item.Id, item.Pos, item.Type)
+			if err != nil {
+				if errors.Is(err, ErrTypeChange) {
+					err = fmt.Errorf(
+						"%w: attempted re-declaration to '%s' at %s",
+						err,
+						item.Type,
 						item.Pos,
-						from.Id,
 					)
 				}
-				if e, ok := edgesById[edgeId]; ok {
-					updateEdge(e, step)
-				} else {
-					e = &Edge{From: from, To: to, Type: step.Type, pos: step.ArrowPos}
-					edgesById[edgeId] = e
-					edgesByFrom[from] = append(edgesByFrom[from], e)
-					edgesByTo[to] = append(edgesByTo[to], e)
-				}
+				return nil, err
+			}
+			updateNodeAttrs(n, item)
 
+		case *ast.EdgeChain:
+			from, err := upsertNodeFromAst(item.From, item.Pos, "")
+			if err != nil {
+				return nil, err
+			}
+			for _, step := range item.Steps {
+				to, err := upsertNodeFromAst(step.To, step.ToPos, "")
+				if err != nil {
+					return nil, err
+				}
+				e, existed, err := g.AddEdge(from, to, step.Type)
+				if err != nil {
+					if errors.Is(err, ErrLoop) {
+						err = fmt.Errorf(
+							"%w: edge at %s forms a loop from '%s' to itself",
+							ErrLoop,
+							item.Pos,
+							from.Id(),
+						)
+					}
+					return nil, err
+				}
+				if !existed {
+					e.pos = step.ArrowPos
+				}
+				updateEdgeAttrs(e, step)
 				from = to
 			}
 		}
 	}
 
-	// Tell each node about its commections
-	for n, edgesFrom := range edgesByFrom {
-		n.EdgesFrom = edgesFrom
-	}
-	for n, edgesTo := range edgesByTo {
-		n.EdgesTo = edgesTo
-	}
-	g.Nodes = lexOrder
-	g.Edges = slices.Collect(maps.Values(edgesById))
-
 	return g, nil
 }
 
-func updateNode(n *Node, astN *ast.Node) error {
-	if astN.Type != "" {
-		if n.Type == "" {
-			n.Type = astN.Type
-			n.typeFromPos = &astN.Pos
-		} else if astN.Type != n.Type {
-			return fmt.Errorf(
-				"%w: node at %s is redefining '%s' nodes' type from declaration at %s",
-				ErrTypeChange,
-				astN.Pos,
-				astN.Id,
-				n.typeFromPos,
-			)
-		}
-	}
-
+func updateNodeAttrs(n *Node, astN *ast.Node) {
 	if astN.Attrs != nil {
 		if n.Attrs == nil {
 			n.Attrs = map[string]string{}
@@ -194,11 +308,9 @@ func updateNode(n *Node, astN *ast.Node) error {
 			n.Attrs[k] = v.Value
 		}
 	}
-
-	return nil
 }
 
-func updateEdge(e *Edge, astStep *ast.EdgeStep) {
+func updateEdgeAttrs(e *Edge, astStep *ast.EdgeStep) {
 	if astStep.Attrs != nil {
 		if e.Attrs == nil {
 			e.Attrs = map[string]string{}
@@ -221,17 +333,16 @@ func lexicalTopoSort(nodes []*Node) error {
 			return fmt.Errorf(
 				"%w: node '%s' already seen in depth-first walk from '%s'",
 				ErrCyclic,
-				n.Id,
-				s.Id,
+				n.id,
+				s.id,
 			)
 		}
 		path[n] = true
 		ranks[n] = max(ranks[n], currRank)
-		for _, e := range n.EdgesFrom {
-			if err := walkDf(s, e.To, currRank+1, path); err != nil {
+		for _, e := range n.edgesFrom {
+			if err := walkDf(s, e.to, currRank+1, path); err != nil {
 				return err
 			}
-
 		}
 		delete(path, n)
 		return nil
@@ -239,7 +350,7 @@ func lexicalTopoSort(nodes []*Node) error {
 	seenApex := false
 	for _, n := range nodes {
 		// Only walk from apex nodes
-		if len(n.EdgesTo) > 0 {
+		if len(n.edgesTo) > 0 {
 			continue
 		}
 		seenApex = true

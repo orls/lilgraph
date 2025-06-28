@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"slices"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -69,8 +70,11 @@ func TestParseEmpty(t *testing.T) {
 			if !ok {
 				t.Fatalf("expected top-level obj from public parser to be an *lilgraph.Graph, but got %T", g)
 			}
-			if len(g.Nodes) != 0 || len(g.Edges) != 0 {
-				t.Fatalf("expected parsing empty file to produce empty graph, but got %d nodes/%d edges", len(g.Nodes), len(g.Edges))
+			nodes := slices.Collect(g.Nodes())
+			edges := slices.Collect(g.Edges())
+
+			if len(nodes) != 0 || len(edges) != 0 {
+				t.Fatalf("expected parsing empty file to produce empty graph, but got %d nodes/%d edges", len(nodes), len(edges))
 			}
 		})
 	}
@@ -132,20 +136,20 @@ func TestNodeAttrs(t *testing.T) {
 		t.Fatalf("expected node-attr example to produce graph obj, but got nil")
 	}
 
-	for i, id := range []string{"A", "B", "C", "D"} {
-		n := g.Nodes[i]
+	for _, id := range []string{"A", "B", "C", "D"} {
+		n := g.Find(id)
 		if n == nil {
 			t.Fatalf("expected node '%s' to exist in graph, but it does not", id)
 		}
-		if n.Id != id {
-			t.Fatalf("expected node '%s' to have id '%s', but got '%s'", id, id, n.Id)
+		if n.Id() != id {
+			t.Fatalf("expected node '%s' to have id '%s', but got '%s'", id, id, n.Id())
 		}
-		if n.Type != "sometype" {
-			t.Fatalf("expected node '%s' to have type='sometype', but got '%s'", id, n.Type)
+		if n.Type() != "sometype" {
+			t.Fatalf("expected node '%s' to have type='sometype', but got '%s'", id, n.Type())
 		}
 	}
 
-	dNode := g.Nodes[3]
+	dNode := g.Find("D")
 	if dNode.Attrs["foo"] != "fooval" {
 		t.Fatalf("node D attr 'foo' did not match expectation")
 	}
@@ -265,8 +269,8 @@ func TestTopoOrder(t *testing.T) {
 			}
 
 			actual := []string{}
-			for _, n := range g.Nodes {
-				actual = append(actual, n.Id)
+			for n := range g.Nodes() {
+				actual = append(actual, n.Id())
 			}
 			if diff := cmp.Diff(expected, actual); diff != "" {
 				t.Fatalf("wrong sort order for '%s':\n%s", inputPath, diff)
