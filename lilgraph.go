@@ -8,6 +8,7 @@ import (
 	"iter"
 	"maps"
 	"os"
+	"regexp"
 	"slices"
 
 	"github.com/orls/lilgraph/internal/ast"
@@ -17,6 +18,7 @@ import (
 )
 
 var (
+	ErrInvalidId    = errors.New("invalid node id")
 	ErrParseFail    = errors.New("failed parsing")
 	ErrLoop         = errors.New("cannot create edge from a node to itself")
 	ErrBadParseType = errors.New("unexpected parser result type")
@@ -91,7 +93,13 @@ func (g *Lilgraph) Edges() iter.Seq[*Edge] {
 	return slices.Values(g.edges)
 }
 
+// NOTE: this must match the equivalent grammar settings.
+var idRegexp = regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+
 func (g *Lilgraph) AddNode(id string, typ string) (*Node, bool, error) {
+	if !idRegexp.MatchString(id) {
+		return nil, false, fmt.Errorf("%w %s", ErrInvalidId, id)
+	}
 	if n, ok := g.nodesById[id]; ok {
 		if typ != "" {
 			if n.typ != "" && n.typ != typ {

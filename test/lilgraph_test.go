@@ -216,6 +216,29 @@ func TestCommentAtEOF(t *testing.T) {
 	}
 }
 
+func TestBadIds(t *testing.T) {
+	cases := []string{
+		" this is a bad id",
+		"0thisisabadid",
+		",thisisabadid",
+		"-thisisabadid",
+		"これは悪いIDだ",
+	}
+	g := lilgraph.NewGraph()
+	for _, badId := range cases {
+		n, exists, err := g.AddNode(badId, "")
+		if !errors.Is(err, lilgraph.ErrInvalidId) {
+			t.Errorf("expected adding node with bad id '%s' to fail with ErrInvalidId, but got err=%v", badId, err)
+		}
+		if exists {
+			t.Errorf("adding node with bad id '%s' reported taht node already exists", badId)
+		}
+		if n != nil {
+			t.Errorf("adding node with bad id '%s' should have returned nil node", badId)
+		}
+	}
+}
+
 func TestLoopsPrevented(t *testing.T) {
 	inputPath := "bad/self-loop.lilgraph"
 	input := readFsFile(t, testCases, inputPath)
