@@ -196,7 +196,13 @@ type Node struct {
 	edgesFrom []*Edge
 	edgesTo   []*Edge
 
-	firstPos    token.Pos
+	// AST parser metadata about location of node's first freestanding
+	// declaration (if any). Nodes that are only everdeclared by an edge chain
+	// will not have this set.
+	declPos *token.Pos
+
+	// AST parser metadata about location where this nodes' type was first
+	// declared (if any).
 	typeFromPos *token.Pos
 }
 
@@ -211,7 +217,7 @@ type Edge struct {
 	from  *Node
 	to    *Node
 
-	pos token.Pos
+	pos *token.Pos
 }
 
 func (e *Edge) Type() string { return e.typ }
@@ -232,17 +238,17 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 		edgesById: map[edgeIdentity]*Edge{},
 	}
 
-	upsertNodeFromAst := func(id string, pos token.Pos, typ string) (*Node, error) {
-		n, existed, err := g.AddNode(id, typ)
+	upsertNodeFromAst := func(id string, pos *token.Pos, typ string) (*Node, error) {
+		n, _, err := g.AddNode(id, typ)
 		if err != nil {
 			return nil, err
 		}
-		if !existed {
-			n.firstPos = pos
+		if n.declPos == nil {
+			n.declPos = pos
 		}
 		if n.typeFromPos == nil && typ != "" {
 			// ...then this is the decl that's first defining the type.
-			n.typeFromPos = &pos
+			n.typeFromPos = pos
 		}
 		return n, nil
 	}
@@ -251,7 +257,7 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 		switch item := rawItem.(type) {
 
 		case *ast.Node:
-			n, err := upsertNodeFromAst(item.Id, item.Pos, item.Type)
+			n, err := upsertNodeFromAst(item.Id, &item.Pos, item.Type)
 			if err != nil {
 				if errors.Is(err, ErrTypeChange) {
 					err = fmt.Errorf(
@@ -266,12 +272,12 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 			updateNodeAttrs(n, item)
 
 		case *ast.EdgeChain:
-			from, err := upsertNodeFromAst(item.From, item.Pos, "")
+			from, err := upsertNodeFromAst(item.From, nil, "")
 			if err != nil {
 				return nil, err
 			}
 			for _, step := range item.Steps {
-				to, err := upsertNodeFromAst(step.To, step.ToPos, "")
+				to, err := upsertNodeFromAst(step.To, nil, "")
 				if err != nil {
 					return nil, err
 				}
@@ -281,14 +287,14 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 						err = fmt.Errorf(
 							"%w: edge at %s forms a loop from '%s' to itself",
 							ErrLoop,
-							item.Pos,
+							step.Pos,
 							from.Id(),
 						)
 					}
 					return nil, err
 				}
 				if !existed {
-					e.pos = step.ArrowPos
+					e.pos = &step.Pos
 				}
 				updateEdgeAttrs(e, step)
 				from = to

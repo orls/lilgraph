@@ -129,11 +129,10 @@ func (n *Node) MarshalJson() ([]byte, error) {
 type EdgeChain struct {
 	From  string      `json:"from"`
 	Steps []*EdgeStep `json:"steps"`
-	Pos   token.Pos
 }
 
 func NewEdgeChain(fromPP, stepPP ParserProduct) (*EdgeChain, error) {
-	from, pos, err := getTokVal(fromPP)
+	from, _, err := getTokVal(fromPP)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting value for edge 'from' node id: %v", err)
 	}
@@ -144,7 +143,6 @@ func NewEdgeChain(fromPP, stepPP ParserProduct) (*EdgeChain, error) {
 	return &EdgeChain{
 		From:  from,
 		Steps: []*EdgeStep{step},
-		Pos:   pos,
 	}, nil
 }
 
@@ -174,15 +172,14 @@ func (e *EdgeChain) MarshalJson() ([]byte, error) {
 }
 
 type EdgeStep struct {
-	To       string
-	Type     string
-	Attrs    Attrs
-	ArrowPos token.Pos
-	ToPos    token.Pos
+	To    string
+	Type  string
+	Attrs Attrs
+	Pos   token.Pos
 }
 
 func NewEdgeStep(arrowPP, toPP, typePP, attrsPP ParserProduct) (*EdgeStep, error) {
-	to, toPos, err := getTokVal(toPP)
+	to, _, err := getTokVal(toPP)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting value for edge 'to'-node id: %v", err)
 	}
@@ -191,10 +188,9 @@ func NewEdgeStep(arrowPP, toPP, typePP, attrsPP ParserProduct) (*EdgeStep, error
 		return nil, fmt.Errorf("failed getting value for edge type pseudoattr: %v", err)
 	}
 	step := &EdgeStep{
-		To:       to,
-		ToPos:    toPos,
-		Type:     typ,
-		ArrowPos: arrowPP.(*token.Token).Pos,
+		To:   to,
+		Type: typ,
+		Pos:  arrowPP.(*token.Token).Pos,
 	}
 	if attrsPP != nil {
 		if attrs, ok := attrsPP.(Attrs); ok {
