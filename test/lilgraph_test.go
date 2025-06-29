@@ -150,11 +150,11 @@ func TestNodeAttrs(t *testing.T) {
 	}
 
 	dNode := g.Find("D")
-	if dNode.Attrs["foo"] != "fooval" {
+	if v, ok := dNode.GetAttr("foo"); !ok || v != "fooval" {
 		t.Fatalf("node D attr 'foo' did not match expectation")
 	}
-	if dNode.Attrs["bar"] != "barval" {
-		t.Fatalf("node D attr 'foo' did not match expectation")
+	if v, ok := dNode.GetAttr("bar"); !ok || v != "barval" {
+		t.Fatalf("node D attr 'bar' did not match expectation")
 	}
 
 	expectMultilineVal := `This is a quoted string that
@@ -171,11 +171,19 @@ It can contain "double-quotes" (if escaped) and 'single quotes' and backticks ` 
 and literal backslashes (¯\_(ツ)_/¯) (incl doubled: \\)
 and unicode もしもし
 and emoji 🥳`
-	if diff := cmp.Diff(expectMultilineVal, dNode.Attrs["multiline"]); diff != "" {
-		t.Fatalf("node D attr 'multiline' did not match expectation:\n%s", diff)
+	if v, ok := dNode.GetAttr("multiline"); ok {
+		if diff := cmp.Diff(expectMultilineVal, v); diff != "" {
+			t.Fatalf("node D attr 'multiline' did not match expectation:\n%s", diff)
+		}
+	} else {
+		t.Fatalf("node D missing expected attr 'multiline'")
 	}
-	if diff := cmp.Diff(expectFancyVal, dNode.Attrs["fancy"]); diff != "" {
-		t.Fatalf("node D attr 'fancy' did not match expectation:\n%s", diff)
+	if v, ok := dNode.GetAttr("fancy"); ok {
+		if diff := cmp.Diff(expectFancyVal, v); diff != "" {
+			t.Fatalf("node D attr 'fancy' did not match expectation:\n%s", diff)
+		}
+	} else {
+		t.Fatalf("node D missing expected attr 'fancy'")
 	}
 }
 

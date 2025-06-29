@@ -148,13 +148,13 @@ TopLevelStmt
     ;
 
 AttrItems
-    : Attr                                                  << $0, nil >>
-    | AttrItems Attr                                        << ast.MergeAttrs($0, $1) >>
+    : Attr                                                  << ast.NewAttrs($0) >>
+    | AttrItems Attr                                        << ast.AddAttr($0, $1) >>
     ;
 
 Attr
-    : id "=" AttrVal                                        << ast.NewAttrs($0, $2) >>
-    | id "=" AttrVal ","                                    << ast.NewAttrs($0, $2) >>
+    : id "=" AttrVal                                        << ast.NewAttr($0, $2) >>
+    | id "=" AttrVal ","                                    << ast.NewAttr($0, $2) >>
     ;
 
 AttrVal

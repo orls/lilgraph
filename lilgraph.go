@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"maps"
 	"os"
 	"slices"
 
@@ -57,8 +58,6 @@ func parse(src []byte, lexCtx token.Context) (*Lilgraph, error) {
 	return buildFromAst(astGraph)
 }
 
-type Attrs map[string]string
-
 type Lilgraph struct {
 	nodes []*Node
 	edges []*Edge
@@ -107,7 +106,7 @@ func (g *Lilgraph) AddNode(id string, typ string) (*Node, bool, error) {
 		}
 		return n, true, nil
 	}
-	n := &Node{id: id, typ: typ}
+	n := &Node{id: id, common: common{typ: typ}}
 	g.nodes = append(g.nodes, n)
 	g.nodesById[id] = n
 	return n, false, nil
@@ -137,7 +136,7 @@ func (g *Lilgraph) AddEdge(from *Node, to *Node, edgeType string) (*Edge, bool, 
 	id := edgeIdentity{from, to, edgeType}
 	e, ok := g.edgesById[id]
 	if !ok {
-		e = &Edge{from: from, to: to, typ: edgeType}
+		e = &Edge{from: from, to: to, common: common{typ: edgeType}}
 		g.edges = append(g.edges, e)
 		g.edgesById[id] = e
 		from.edgesFrom = append(from.edgesFrom, e)
@@ -190,9 +189,9 @@ func (g *Lilgraph) deleteEdge(e *Edge, purgeFrom, purgeTo bool) bool {
 }
 
 type Node struct {
+	common
+
 	id        string
-	typ       string
-	Attrs     Attrs
 	edgesFrom []*Edge
 	edgesTo   []*Edge
 
@@ -207,15 +206,14 @@ type Node struct {
 }
 
 func (n *Node) Id() string                 { return n.id }
-func (n *Node) Type() string               { return n.typ }
 func (n *Node) EdgesFrom() iter.Seq[*Edge] { return slices.Values(n.edgesFrom) }
 func (n *Node) EdgesTo() iter.Seq[*Edge]   { return slices.Values(n.edgesTo) }
 
 type Edge struct {
-	typ   string
-	Attrs Attrs
-	from  *Node
-	to    *Node
+	common
+
+	from *Node
+	to   *Node
 
 	pos *token.Pos
 }
@@ -228,6 +226,90 @@ type edgeIdentity struct {
 	from *Node
 	to   *Node
 	typ  string
+}
+
+type common struct {
+	typ   string
+	attrs []attr
+}
+
+type attr struct {
+	key   string
+	value string
+}
+
+// type Attrs struct {
+// 	attrs []attr
+// }
+
+func (c *common) Type() string {
+	return c.typ
+}
+
+func (c *common) SetAttr(key, value string) {
+	if c.attrs == nil {
+		c.attrs = []attr{}
+	}
+	for i, attr := range c.attrs {
+		if attr.key == key {
+			c.attrs[i].value = value
+			return
+		}
+	}
+	c.attrs = append(c.attrs, attr{key: key, value: value})
+}
+
+func (c *common) GetAttr(key string) (string, bool) {
+	for _, attr := range c.attrs {
+		if attr.key == key {
+			return attr.value, true
+		}
+	}
+	return "", false
+}
+
+func (c *common) DeleteAttr(key string) {
+	if c.attrs == nil {
+		return
+	}
+	for i, attr := range c.attrs {
+		if attr.key == key {
+			c.attrs = slices.Delete(c.attrs, i, i+1)
+			return
+		}
+	}
+}
+
+func (c *common) AttrsMap() map[string]string {
+	if c.attrs == nil {
+		return nil
+	}
+	m := make(map[string]string, len(c.attrs))
+	for _, attr := range c.attrs {
+		m[attr.key] = attr.value
+	}
+	return m
+}
+
+func (c *common) ReplaceAttrs(m map[string]string) {
+	if c.attrs == nil {
+		c.attrs = []attr{}
+	}
+	// Build new attrs, discarding any unwanted items not in m, but preserving
+	// original order for any common keys.
+	m = maps.Clone(m)
+	newAttrs := make([]attr, 0, len(m))
+	for _, attr := range c.attrs {
+		if wantVal, ok := m[attr.key]; ok {
+			attr.value = wantVal
+			newAttrs = append(newAttrs, attr)
+		}
+		delete(m, attr.key)
+	}
+	for k, v := range m {
+		newAttrs = append(newAttrs, attr{key: k, value: v})
+	}
+	c.attrs = newAttrs
 }
 
 func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
@@ -269,7 +351,7 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 				}
 				return nil, err
 			}
-			updateNodeAttrs(n, item)
+			updateAttrs(&n.common, item.Attrs)
 
 		case *ast.EdgeChain:
 			from, err := upsertNodeFromAst(item.From, nil, "")
@@ -296,7 +378,7 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 				if !existed {
 					e.pos = &step.Pos
 				}
-				updateEdgeAttrs(e, step)
+				updateAttrs(&e.common, step.Attrs)
 				from = to
 			}
 		}
@@ -305,25 +387,9 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 	return g, nil
 }
 
-func updateNodeAttrs(n *Node, astN *ast.Node) {
-	if astN.Attrs != nil {
-		if n.Attrs == nil {
-			n.Attrs = map[string]string{}
-		}
-		for k, v := range astN.Attrs {
-			n.Attrs[k] = v.Value
-		}
-	}
-}
-
-func updateEdgeAttrs(e *Edge, astStep *ast.EdgeStep) {
-	if astStep.Attrs != nil {
-		if e.Attrs == nil {
-			e.Attrs = map[string]string{}
-		}
-		for k, v := range astStep.Attrs {
-			e.Attrs[k] = v.Value
-		}
+func updateAttrs(obj *common, astAttrs ast.Attrs) {
+	for _, astAttr := range astAttrs {
+		obj.SetAttr(astAttr.Key, astAttr.Value)
 	}
 }
 

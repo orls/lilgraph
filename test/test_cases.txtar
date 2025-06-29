@@ -72,9 +72,9 @@ a -> b -> c
 b -> b
 
 -- happy/node-attrs.lilgraph --
+A []
 A [sometype]
 A [sometype;]
-A []
 A
 
 B [sometype foo=fooval]
@@ -146,42 +146,42 @@ J-[
     {"ast_type": "edge_chain", "from": "A", "steps": [{"to": "B"}]},
     {"ast_type": "edge_chain", "from": "B", "steps": [{"to": "C"}]},
     {"ast_type": "edge_chain", "from": "C", "steps": [{"to": "D",
-        "attrs": {
-            "foo": "fooval",
-            "bar": "barval"
-        }
-        }]},
+        "attrs": [
+            {"k":"foo", "v": "fooval"},
+            {"k":"bar", "v": "barval"}
+		]
+    }]},
     {"ast_type": "edge_chain", "from": "D", "steps": [{"to": "E",
-        "attrs": {
-            "baz": "bazval",
-            "quux": "quuxval"
-        }
+        "attrs": [
+            {"k":"baz", "v": "bazval"},
+            {"k":"quux", "v": "quuxval"}
+		]
     }]},
     {"ast_type": "edge_chain", "from": "E", "steps": [{"to": "F",
-        "attrs": {
-            "foo": "fooval",
-            "bar": "barval"
-        }
+        "attrs": [
+            {"k":"foo", "v": "fooval"},
+            {"k":"bar", "v": "barval"}
+		]
     }]},
     {"ast_type": "edge_chain", "from": "F", "steps": [{"to": "G", "type": "myedgetype"}]},
     {"ast_type": "edge_chain", "from": "G", "steps": [{"to": "H", "type": "myedgetype"}]},
     {"ast_type": "edge_chain", "from": "H", "steps": [{"to": "I", "type": "myedgetype",
-        "attrs": {
-            "foo": "fooval",
-            "bar": "barval"
-        }
+        "attrs": [
+            {"k":"foo", "v": "fooval"},
+            {"k":"bar", "v": "barval"}
+		]
     }]},
     {"ast_type": "edge_chain", "from": "I", "steps": [{"to": "J", "type": "myedgetype",
-        "attrs": {
-            "baz": "bazval",
-            "quux": "quuxval"
-        }
+        "attrs": [
+            {"k":"baz", "v": "bazval"},
+            {"k":"quux", "v": "quuxval"}
+		]
     }]},
     {"ast_type": "edge_chain", "from": "J", "steps": [{"to": "K", "type": "myedgetype",
-        "attrs": {
-            "foo": "fooval",
-            "bar": "barval"
-        }
+        "attrs": [
+            {"k":"foo", "v": "fooval"},
+            {"k":"bar", "v": "barval"}
+		]
     }]}
 ]}
 

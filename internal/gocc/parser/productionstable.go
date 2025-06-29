@@ -270,43 +270,43 @@ var productionsTable = ProdTab{
 		},
 	},
 	ProdTabEntry{
-		String: `AttrItems : Attr	<< X[0], nil >>`,
+		String: `AttrItems : Attr	<< ast.NewAttrs(X[0]) >>`,
 		Id:         "AttrItems",
 		NTType:     7,
 		Index:      25,
 		NumSymbols: 1,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
-			return X[0], nil
+			return ast.NewAttrs(X[0])
 		},
 	},
 	ProdTabEntry{
-		String: `AttrItems : AttrItems Attr	<< ast.MergeAttrs(X[0], X[1]) >>`,
+		String: `AttrItems : AttrItems Attr	<< ast.AddAttr(X[0], X[1]) >>`,
 		Id:         "AttrItems",
 		NTType:     7,
 		Index:      26,
 		NumSymbols: 2,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
-			return ast.MergeAttrs(X[0], X[1])
+			return ast.AddAttr(X[0], X[1])
 		},
 	},
 	ProdTabEntry{
-		String: `Attr : id "=" AttrVal	<< ast.NewAttrs(X[0], X[2]) >>`,
+		String: `Attr : id "=" AttrVal	<< ast.NewAttr(X[0], X[2]) >>`,
 		Id:         "Attr",
 		NTType:     8,
 		Index:      27,
 		NumSymbols: 3,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
-			return ast.NewAttrs(X[0], X[2])
+			return ast.NewAttr(X[0], X[2])
 		},
 	},
 	ProdTabEntry{
-		String: `Attr : id "=" AttrVal ","	<< ast.NewAttrs(X[0], X[2]) >>`,
+		String: `Attr : id "=" AttrVal ","	<< ast.NewAttr(X[0], X[2]) >>`,
 		Id:         "Attr",
 		NTType:     8,
 		Index:      28,
 		NumSymbols: 4,
 		ReduceFunc: func(X []Attrib, C interface{}) (Attrib, error) {
-			return ast.NewAttrs(X[0], X[2])
+			return ast.NewAttr(X[0], X[2])
 		},
 	},
 	ProdTabEntry{

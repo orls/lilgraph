@@ -202,59 +202,49 @@ func NewEdgeStep(arrowPP, toPP, typePP, attrsPP ParserProduct) (*EdgeStep, error
 	return step, nil
 }
 
-type AttrPos struct {
-	Value string
+type Attr struct {
+	Key   string `json:"k"`
+	Value string `json:"v"`
 	Pos   token.Pos
 }
 
-type Attrs map[string]AttrPos
+type Attrs []Attr
 
-func (a *Attrs) UnmarshalJSON(bytes []byte) error {
-	var tmp map[string]string
-	if err := json.Unmarshal(bytes, &tmp); err != nil {
-		return err
+func NewAttrs(attrPP ParserProduct) (Attrs, error) {
+	attr, ok := attrPP.(Attr)
+	if !ok {
+		return nil, fmt.Errorf("expected first item for attr list to be Attr, but got %T", attrPP)
 	}
-	var newA Attrs
-	if tmp != nil {
-		newA = Attrs{}
-		for k, v := range tmp {
-			newA[k] = AttrPos{Value: v}
-		}
-	}
-	*a = newA
-	return nil
+	return Attrs{attr}, nil
 }
 
-func MergeAttrs(lPP, rPP ParserProduct) (Attrs, error) {
-	l, ok := lPP.(Attrs)
+func AddAttr(attrsPP, attrPP ParserProduct) (Attrs, error) {
+	attrs, ok := attrsPP.(Attrs)
 	if !ok {
-		return nil, fmt.Errorf("can't merge attrs; expected left-hand arg to be Attrs but got %T", lPP)
+		return nil, fmt.Errorf("can't merge attrs; expected left-hand arg to be Attrs but got %T", attrsPP)
 	}
-	r, ok := rPP.(Attrs)
+	attr, ok := attrPP.(Attr)
 	if !ok {
-		return nil, fmt.Errorf("can't merge attrs; expected right-hand arg to be Attrs but got %T", rPP)
+		return nil, fmt.Errorf("can't merge attrs; expected right-hand arg to be Attr but got %T", attrPP)
 	}
-
-	for k, v := range r {
-		l[k] = v
-	}
-	return l, nil
+	return append(attrs, attr), nil
 }
 
-func NewAttrs(kPP, vPP ParserProduct) (Attrs, error) {
+func NewAttr(kPP, vPP ParserProduct) (Attr, error) {
 	k, pos, err := getTokVal(kPP)
 	if err != nil {
-		return nil, fmt.Errorf("failed getting attr key name: %v", err)
+		return Attr{}, fmt.Errorf("failed getting attr key name: %v", err)
 	}
 	v, err := getTokOrLiteralStr(vPP)
 	if err != nil {
-		return nil, fmt.Errorf("failed getting value for attr '%s': %v", k, err)
+		return Attr{}, fmt.Errorf("failed getting value for attr '%s': %v", k, err)
 	}
 	// Always use the position metadata of the key, not value.
-	return Attrs{k: AttrPos{
+	return Attr{
+		Key:   k,
 		Value: v,
 		Pos:   pos,
-	}}, nil
+	}, nil
 }
 
 func Unquote(quotedValPP ParserProduct) (string, error) {
