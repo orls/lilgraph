@@ -83,6 +83,11 @@ E
 a -> b -> c
 b -> b
 
+-- bad/node-type-change.lilgraph --
+A
+A [type=sometype]
+A [type=othertype] // should fails!
+
 -- happy/node-attrs.lilgraph --
 A []
 A [sometype]

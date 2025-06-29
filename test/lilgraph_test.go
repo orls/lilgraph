@@ -248,6 +248,15 @@ func TestLoopsPrevented(t *testing.T) {
 	}
 }
 
+func TestNoNodeTypeChange(t *testing.T) {
+	inputPath := "bad/node-type-change.lilgraph"
+	input := readFsFile(t, testCases, inputPath)
+	_, err := lilgraph.Parse(input)
+	if !errors.Is(err, lilgraph.ErrTypeChange) {
+		t.Fatalf("expected type-change case to fail with ErrTypeChange,  got err=%v", err)
+	}
+}
+
 func TestCycleDetection(t *testing.T) {
 	cases := []string{
 		"bad/cyclic-1.lilgraph",
