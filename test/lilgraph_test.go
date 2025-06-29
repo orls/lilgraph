@@ -84,10 +84,10 @@ func TestParseEmpty(t *testing.T) {
 // produce valid graph structure per chosen semantics.
 func TestParserHappyPaths(t *testing.T) {
 	cases := map[string]string{
-		"happy/simple-nodes.lilgraph":             "happy/simple-nodes.expected.json",
-		"happy/simple-edges.lilgraph":             "happy/simple-edges.expected.json",
-		"dubious/simple-edges-multiline.lilgraph": "happy/simple-edges.expected.json",
-		"happy/edge-attrs.lilgraph":               "happy/edge-attrs.expected.json",
+		"happy/simple-nodes.lilgraph":             "happy/simple-nodes.expected-ast.json",
+		"happy/simple-edges.lilgraph":             "happy/simple-edges.expected-ast.json",
+		"dubious/simple-edges-multiline.lilgraph": "happy/simple-edges.expected-ast.json",
+		"happy/edge-attrs.lilgraph":               "happy/edge-attrs.expected-ast.json",
 	}
 	for inputPath, expectAstJsonPath := range cases {
 		t.Run(inputPath, func(t *testing.T) {
@@ -305,6 +305,33 @@ func TestTopoOrder(t *testing.T) {
 			}
 			if diff := cmp.Diff(expected, actual); diff != "" {
 				t.Fatalf("wrong sort order for '%s':\n%s", inputPath, diff)
+			}
+		})
+	}
+}
+
+func TestMarshalCanonicalFormat(t *testing.T) {
+	cases := map[string]string{
+		"happy/simple-nodes.lilgraph": "happy/simple-nodes.expect-marshalled.lilgraph",
+		"happy/simple-edges.lilgraph": "happy/simple-edges.expect-marshalled.lilgraph",
+		"happy/node-attrs.lilgraph":   "happy/node-attrs.expect-marshalled.lilgraph",
+		"happy/edge-attrs.lilgraph":   "happy/edge-attrs.expect-marshalled.lilgraph",
+	}
+
+	for inputPath, expectationPath := range cases {
+		t.Run(inputPath, func(t *testing.T) {
+			input := readFsFile(t, testCases, inputPath)
+			expect := readFsFile(t, testCases, expectationPath)
+			g, err := lilgraph.Parse(input)
+			if err != nil || g == nil {
+				t.Fatal()
+			}
+			actual, err := g.MarshalText()
+			if err != nil {
+				t.Fatalf("expected graph '%s' to produce plaintext format, but got err=%v", inputPath, err)
+			}
+			if diff := cmp.Diff(string(expect), string(actual)); diff != "" {
+				t.Fatalf("plaintext rendering of '%s' differed from expectation:\n%s", inputPath, diff)
 			}
 		})
 	}

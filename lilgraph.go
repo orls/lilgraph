@@ -196,6 +196,10 @@ func (g *Lilgraph) deleteEdge(e *Edge, purgeFrom, purgeTo bool) bool {
 	return true
 }
 
+func (g *Lilgraph) MarshalText() (text []byte, err error) {
+	return marshalText(g)
+}
+
 type Node struct {
 	common
 

@@ -33,7 +33,13 @@ DDD EEE
 //# want some comments in yr comments?
 #// want some comments in yr comments?
 
--- happy/simple-nodes.expected.json --
+-- happy/simple-nodes.expect-marshalled.lilgraph --
+AAA
+BBB
+CCC
+DDD
+EEE
+-- happy/simple-nodes.expected-ast.json --
 {"ast_items": [
     {"ast_type": "node_def", "id":"AAA"},
     {"ast_type": "node_def", "id":"BBB"},
@@ -45,12 +51,18 @@ DDD EEE
 A->B -> C
 C ----> A
 D------->E
--- happy/simple-edges.expected.json --
+-- happy/simple-edges.expect-marshalled.lilgraph --
+A -> B
+B -> C
+C -> A
+D -> E
+-- happy/simple-edges.expected-ast.json --
 {"ast_items": [
     {"ast_type": "edge_chain", "from": "A", "steps": [{"to": "B"}, {"to":"C"}]},
     {"ast_type": "edge_chain", "from": "C", "steps": [{"to": "A"}]},
     {"ast_type": "edge_chain", "from": "D", "steps": [{"to": "E"}]}
 ]}
+
 -- dubious/simple-edges-multiline.lilgraph --
 // TODO: these are technically valid because it's easiest to write the grammar
 // this way...but I'm on the fence about it.
@@ -111,6 +123,23 @@ E [ a=0001234567 b=123.123 c=.123 e=-123 f=-123.123 g=-.123 ]
 
 
 
+-- happy/node-attrs.expect-marshalled.lilgraph --
+A [sometype]
+B [sometype; foo=fooval]
+C [sometype; foo=fooval, bar=barval]
+D [sometype; foo=fooval, bar=barval, multiline="This is a quoted string that
+spans
+multiple
+lines, but no quotes.", fancy="This is a quoted string that also
+spans multiple lines.
+It also has some leading/trailing whitespace:
+    <- 4 spaces ->    
+	<- 1 tab ->	
+It can contain \"double-quotes\" (if escaped) and 'single quotes' and backticks ``
+and literal backslashes (¯\_(ツ)_/¯) (incl doubled: \\)
+and unicode もしもし
+and emoji 🥳"]
+E [a=0001234567, b=123.123, c=.123, e=-123, f=-123.123, g=-.123]
 -- happy/edge-attrs.lilgraph --
 // Empty attrs ignored
 A -[]-> B
@@ -140,8 +169,18 @@ J-[
 ]->K
 
 
-
--- happy/edge-attrs.expected.json --
+-- happy/edge-attrs.expect-marshalled.lilgraph --
+A -> B
+B -> C
+C -[foo=fooval, bar=barval]-> D
+D -[baz=bazval, quux=quuxval]-> E
+E -[foo=fooval, bar=barval]-> F
+F -[myedgetype]-> G
+G -[myedgetype]-> H
+H -[myedgetype; foo=fooval, bar=barval]-> I
+I -[myedgetype; baz=bazval, quux=quuxval]-> J
+J -[myedgetype; foo=fooval, bar=barval]-> K
+-- happy/edge-attrs.expected-ast.json --
 {"ast_items": [
     {"ast_type": "edge_chain", "from": "A", "steps": [{"to": "B"}]},
     {"ast_type": "edge_chain", "from": "B", "steps": [{"to": "C"}]},
