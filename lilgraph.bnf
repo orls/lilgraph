@@ -99,13 +99,7 @@ edge_attr_close : ']' '-' { '-' } '>' ;
 
 << import "github.com/orls/lilgraph/internal/ast" >>
 
-/*
-Graph
-    : TopLevelContent                                       << ast.NewGraph($0) >>
-    ;
-    */
-
-TopLevelContent
+WholeDoc
     : empty                                                 << ast.NewGraph(nil) >>
     | TopLevelDeclList
     ;
@@ -115,12 +109,12 @@ TopLevelDeclList
     | TopLevelDeclList TopLevelStmt                         << ast.AppendGraphItem($0, $1) >>
     ;
 
+OptSep : empty | ";" ;
+
 NodeDecl
     : id "[" AttrItems "]"                                  << ast.NewNode($0, "", $2) >>
-    | id "[" id AttrItems "]"                               << ast.NewNode($0, $2, $3) >>
-    | id "[" id ";" AttrItems "]"                           << ast.NewNode($0, $2, $4) >>
-    | id "[" id "]"                                         << ast.NewNode($0, $2, nil) >>
-    | id "[" id ";" "]"                                     << ast.NewNode($0, $2, nil) >>
+    | id "[" id OptSep AttrItems "]"                        << ast.NewNode($0, $2, $4) >>
+    | id "[" id OptSep "]"                                  << ast.NewNode($0, $2, nil) >>
     | id "[" "]"                                            << ast.NewNode($0, "", nil) >>
     | id                                                    << ast.NewNode($0, "", nil) >>
     ;
@@ -129,10 +123,8 @@ EdgeRHS
     : edgearrow id                                          << ast.NewEdgeStep($0, $1, "", nil) >>
     | edge_attr_open edge_attr_close id                     << ast.NewEdgeStep($0, $2, "", nil) >>
     | edge_attr_open AttrItems edge_attr_close id           << ast.NewEdgeStep($0, $3, "", $1) >>
-    | edge_attr_open id edge_attr_close id                  << ast.NewEdgeStep($0, $3, $1, nil) >>
-    | edge_attr_open id ";" edge_attr_close id              << ast.NewEdgeStep($0, $4, $1, nil) >>
-    | edge_attr_open id AttrItems edge_attr_close id        << ast.NewEdgeStep($0, $4, $1, $2) >>
-    | edge_attr_open id ";" AttrItems edge_attr_close id    << ast.NewEdgeStep($0, $5, $1, $3) >>
+    | edge_attr_open id OptSep edge_attr_close id           << ast.NewEdgeStep($0, $4, $1, nil) >>
+    | edge_attr_open id OptSep AttrItems edge_attr_close id << ast.NewEdgeStep($0, $5, $1, $3) >>
     ;
 
 EdgeDecl
@@ -141,20 +133,20 @@ EdgeDecl
     ;
 
 TopLevelStmt
-    : EdgeDecl
-    | EdgeDecl ";"
-    | NodeDecl
-    | NodeDecl ";"
+    : EdgeDecl OptSep
+    | NodeDecl OptSep
     ;
+
 
 AttrItems
     : Attr                                                  << ast.NewAttrs($0) >>
     | AttrItems Attr                                        << ast.AddAttr($0, $1) >>
     ;
 
+OptAttrSep : empty | "," ;
+    
 Attr
-    : id "=" AttrVal                                        << ast.NewAttr($0, $2) >>
-    | id "=" AttrVal ","                                    << ast.NewAttr($0, $2) >>
+    : id "=" AttrVal OptAttrSep                             << ast.NewAttr($0, $2) >>
     ;
 
 AttrVal

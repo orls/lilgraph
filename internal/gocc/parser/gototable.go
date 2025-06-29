@@ -2,7 +2,7 @@
 
 package parser
 
-const numNTSymbols = 10
+const numNTSymbols = 12
 
 type (
 	gotoTable [numStates]gotoRow
@@ -12,745 +12,827 @@ type (
 var gotoTab = gotoTable{
 	gotoRow{ // S0
 		-1, // S'
-		1,  // TopLevelContent
+		1,  // WholeDoc
 		2,  // TopLevelDeclList
+		-1, // OptSep
 		4,  // NodeDecl
 		-1, // EdgeRHS
 		6,  // EdgeDecl
 		3,  // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S1
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S2
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		4,  // NodeDecl
 		-1, // EdgeRHS
 		6,  // EdgeDecl
 		7,  // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S3
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S4
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		8,  // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S5
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
-		10, // EdgeRHS
+		11, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S6
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		14, // OptSep
 		-1, // NodeDecl
-		14, // EdgeRHS
+		15, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S7
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S8
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S9
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		16, // AttrItems
-		18, // Attr
+		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S10
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		-1, // AttrItems
-		-1, // Attr
+		17, // AttrItems
+		-1, // OptAttrSep
+		19, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S11
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S12
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		21, // AttrItems
-		23, // Attr
+		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S13
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		-1, // AttrItems
-		-1, // Attr
+		22, // AttrItems
+		-1, // OptAttrSep
+		24, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S14
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S15
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		25, // AttrItems
-		18, // Attr
+		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S16
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		25, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		30, // Attr
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S17
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
+		-1, // OptAttrSep
+		30, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S18
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S19
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S20
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		32, // AttrItems
-		23, // Attr
+		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S21
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		31, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		37, // Attr
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S22
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
+		-1, // OptAttrSep
+		36, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S23
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S24
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S25
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		-1, // AttrItems
-		30, // Attr
+		38, // AttrItems
+		-1, // OptAttrSep
+		19, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S26
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S27
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		40, // AttrItems
-		18, // Attr
-		-1, // AttrVal
+		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
+		41, // AttrVal
 	},
 	gotoRow{ // S28
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
-		43, // AttrVal
+		-1, // AttrVal
 	},
 	gotoRow{ // S29
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S30
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S31
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
-		-1, // AttrItems
-		-1, // Attr
+		44, // AttrItems
+		-1, // OptAttrSep
+		24, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S32
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		37, // Attr
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S33
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
-		-1, // NodeDecl
-		-1, // EdgeRHS
-		-1, // EdgeDecl
-		-1, // TopLevelStmt
-		47, // AttrItems
-		23, // Attr
-		-1, // AttrVal
-	},
-	gotoRow{ // S34
-		-1, // S'
-		-1, // TopLevelContent
-		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
+		-1, // Attr
+		47, // AttrVal
+	},
+	gotoRow{ // S34
+		-1, // S'
+		-1, // WholeDoc
+		-1, // TopLevelDeclList
+		-1, // OptSep
+		-1, // NodeDecl
+		-1, // EdgeRHS
+		-1, // EdgeDecl
+		-1, // TopLevelStmt
+		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S35
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
-		51, // AttrVal
+		-1, // AttrVal
 	},
 	gotoRow{ // S36
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S37
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S38
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
+		-1, // OptAttrSep
+		30, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S39
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S40
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		30, // Attr
+		-1, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S41
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		52, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S42
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S43
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S44
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
+		-1, // OptAttrSep
+		36, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S45
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S46
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S47
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		37, // Attr
+		56, // OptAttrSep
+		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S48
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S49
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S50
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S51
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S52
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S53
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S54
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S55
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S56
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S57
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},
 	gotoRow{ // S58
 		-1, // S'
-		-1, // TopLevelContent
+		-1, // WholeDoc
 		-1, // TopLevelDeclList
+		-1, // OptSep
 		-1, // NodeDecl
 		-1, // EdgeRHS
 		-1, // EdgeDecl
 		-1, // TopLevelStmt
 		-1, // AttrItems
-		-1, // Attr
-		-1, // AttrVal
-	},
-	gotoRow{ // S59
-		-1, // S'
-		-1, // TopLevelContent
-		-1, // TopLevelDeclList
-		-1, // NodeDecl
-		-1, // EdgeRHS
-		-1, // EdgeDecl
-		-1, // TopLevelStmt
-		-1, // AttrItems
-		-1, // Attr
-		-1, // AttrVal
-	},
-	gotoRow{ // S60
-		-1, // S'
-		-1, // TopLevelContent
-		-1, // TopLevelDeclList
-		-1, // NodeDecl
-		-1, // EdgeRHS
-		-1, // EdgeDecl
-		-1, // TopLevelStmt
-		-1, // AttrItems
-		-1, // Attr
-		-1, // AttrVal
-	},
-	gotoRow{ // S61
-		-1, // S'
-		-1, // TopLevelContent
-		-1, // TopLevelDeclList
-		-1, // NodeDecl
-		-1, // EdgeRHS
-		-1, // EdgeDecl
-		-1, // TopLevelStmt
-		-1, // AttrItems
+		-1, // OptAttrSep
 		-1, // Attr
 		-1, // AttrVal
 	},

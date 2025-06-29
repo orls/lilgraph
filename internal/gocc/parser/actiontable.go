@@ -15,17 +15,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			reduce(1), // ␚, reduce: TopLevelContent
+			reduce(1), // ␚, reduce: WholeDoc
 			nil,       // empty
+			nil,       // ;
 			shift(5),  // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -36,15 +36,15 @@ var actionTab = actionTable{
 			nil,          // INVALID
 			accept(true), // ␚
 			nil,          // empty
+			nil,          // ;
 			nil,          // id
 			nil,          // [
 			nil,          // ]
-			nil,          // ;
 			nil,          // edgearrow
 			nil,          // edge_attr_open
 			nil,          // edge_attr_close
-			nil,          // =
 			nil,          // ,
+			nil,          // =
 			nil,          // numeric_literal
 			nil,          // quoted_string
 		},
@@ -53,17 +53,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			reduce(2), // ␚, reduce: TopLevelContent
+			reduce(2), // ␚, reduce: WholeDoc
 			nil,       // empty
+			nil,       // ;
 			shift(5),  // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -74,15 +74,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			reduce(3), // ␚, reduce: TopLevelDeclList
 			nil,       // empty
+			nil,       // ;
 			reduce(3), // id, reduce: TopLevelDeclList
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -90,20 +90,20 @@ var actionTab = actionTable{
 	actionRow{ // S4
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(23), // ␚, reduce: TopLevelStmt
-			nil,        // empty
-			reduce(23), // id, reduce: TopLevelStmt
-			nil,        // [
-			nil,        // ]
-			shift(8),   // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			reduce(5), // ␚, reduce: OptSep
+			nil,       // empty
+			shift(9),  // ;
+			reduce(5), // id, reduce: OptSep
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S5
@@ -112,15 +112,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			reduce(11), // ␚, reduce: NodeDecl
 			nil,        // empty
-			reduce(11), // id, reduce: NodeDecl
-			shift(9),   // [
-			nil,        // ]
 			reduce(11), // ;, reduce: NodeDecl
-			shift(11),  // edgearrow
-			shift(12),  // edge_attr_open
+			reduce(11), // id, reduce: NodeDecl
+			shift(10),  // [
+			nil,        // ]
+			shift(12),  // edgearrow
+			shift(13),  // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -128,20 +128,20 @@ var actionTab = actionTable{
 	actionRow{ // S6
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(21), // ␚, reduce: TopLevelStmt
-			nil,        // empty
-			reduce(21), // id, reduce: TopLevelStmt
-			nil,        // [
-			nil,        // ]
-			shift(13),  // ;
-			shift(11),  // edgearrow
-			shift(12),  // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			reduce(5), // ␚, reduce: OptSep
+			nil,       // empty
+			shift(9),  // ;
+			reduce(5), // id, reduce: OptSep
+			nil,       // [
+			nil,       // ]
+			shift(12), // edgearrow
+			shift(13), // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S7
@@ -150,15 +150,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			reduce(4), // ␚, reduce: TopLevelDeclList
 			nil,       // empty
+			nil,       // ;
 			reduce(4), // id, reduce: TopLevelDeclList
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -167,17 +167,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			reduce(24), // ␚, reduce: TopLevelStmt
+			reduce(20), // ␚, reduce: TopLevelStmt
 			nil,        // empty
-			reduce(24), // id, reduce: TopLevelStmt
+			nil,        // ;
+			reduce(20), // id, reduce: TopLevelStmt
 			nil,        // [
 			nil,        // ]
-			nil,        // ;
 			nil,        // edgearrow
 			nil,        // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -186,17 +186,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			nil,       // ␚
+			reduce(6), // ␚, reduce: OptSep
 			nil,       // empty
-			shift(15), // id
-			nil,       // [
-			shift(17), // ]
 			nil,       // ;
+			reduce(6), // id, reduce: OptSep
+			nil,       // [
+			nil,       // ]
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -204,39 +204,39 @@ var actionTab = actionTable{
 	actionRow{ // S10
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(19), // ␚, reduce: EdgeDecl
-			nil,        // empty
-			reduce(19), // id, reduce: EdgeDecl
-			nil,        // [
-			nil,        // ]
-			reduce(19), // ;, reduce: EdgeDecl
-			reduce(19), // edgearrow, reduce: EdgeDecl
-			reduce(19), // edge_attr_open, reduce: EdgeDecl
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(16), // id
+			nil,       // [
+			shift(18), // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S11
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(19), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			reduce(17), // ␚, reduce: EdgeDecl
+			nil,        // empty
+			reduce(17), // ;, reduce: EdgeDecl
+			reduce(17), // id, reduce: EdgeDecl
+			nil,        // [
+			nil,        // ]
+			reduce(17), // edgearrow, reduce: EdgeDecl
+			reduce(17), // edge_attr_open, reduce: EdgeDecl
+			nil,        // edge_attr_close
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S12
@@ -245,15 +245,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
+			nil,       // ;
 			shift(20), // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			shift(22), // edge_attr_close
-			nil,       // =
+			nil,       // edge_attr_close
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -261,37 +261,37 @@ var actionTab = actionTable{
 	actionRow{ // S13
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(22), // ␚, reduce: TopLevelStmt
-			nil,        // empty
-			reduce(22), // id, reduce: TopLevelStmt
-			nil,        // [
-			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(21), // id
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			shift(23), // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S14
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			reduce(20), // ␚, reduce: EdgeDecl
+			reduce(19), // ␚, reduce: TopLevelStmt
 			nil,        // empty
-			reduce(20), // id, reduce: EdgeDecl
+			nil,        // ;
+			reduce(19), // id, reduce: TopLevelStmt
 			nil,        // [
 			nil,        // ]
-			reduce(20), // ;, reduce: EdgeDecl
-			reduce(20), // edgearrow, reduce: EdgeDecl
-			reduce(20), // edge_attr_open, reduce: EdgeDecl
+			nil,        // edgearrow
+			nil,        // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -299,20 +299,20 @@ var actionTab = actionTable{
 	actionRow{ // S15
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(24), // id
-			nil,       // [
-			shift(26), // ]
-			shift(27), // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			shift(28), // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			reduce(18), // ␚, reduce: EdgeDecl
+			nil,        // empty
+			reduce(18), // ;, reduce: EdgeDecl
+			reduce(18), // id, reduce: EdgeDecl
+			nil,        // [
+			nil,        // ]
+			reduce(18), // edgearrow, reduce: EdgeDecl
+			reduce(18), // edge_attr_open, reduce: EdgeDecl
+			nil,        // edge_attr_close
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S16
@@ -321,15 +321,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(24), // id
+			shift(26), // ;
+			reduce(5), // id, reduce: OptSep
 			nil,       // [
-			shift(29), // ]
-			nil,       // ;
+			reduce(5), // ], reduce: OptSep
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			shift(27), // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -337,37 +337,37 @@ var actionTab = actionTable{
 	actionRow{ // S17
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(10), // ␚, reduce: NodeDecl
-			nil,        // empty
-			reduce(10), // id, reduce: NodeDecl
-			nil,        // [
-			nil,        // ]
-			reduce(10), // ;, reduce: NodeDecl
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(28), // id
+			nil,       // [
+			shift(29), // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S18
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			nil,        // ␚
+			reduce(10), // ␚, reduce: NodeDecl
 			nil,        // empty
-			reduce(25), // id, reduce: AttrItems
+			reduce(10), // ;, reduce: NodeDecl
+			reduce(10), // id, reduce: NodeDecl
 			nil,        // [
-			reduce(25), // ], reduce: AttrItems
-			nil,        // ;
+			nil,        // ]
 			nil,        // edgearrow
 			nil,        // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -376,17 +376,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			reduce(12), // ␚, reduce: EdgeRHS
+			nil,        // ␚
 			nil,        // empty
-			reduce(12), // id, reduce: EdgeRHS
+			nil,        // ;
+			reduce(21), // id, reduce: AttrItems
 			nil,        // [
-			nil,        // ]
-			reduce(12), // ;, reduce: EdgeRHS
-			reduce(12), // edgearrow, reduce: EdgeRHS
-			reduce(12), // edge_attr_open, reduce: EdgeRHS
+			reduce(21), // ], reduce: AttrItems
+			nil,        // edgearrow
+			nil,        // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -394,20 +394,20 @@ var actionTab = actionTable{
 	actionRow{ // S20
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(31), // id
-			nil,       // [
-			nil,       // ]
-			shift(33), // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			shift(34), // edge_attr_close
-			shift(35), // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			reduce(12), // ␚, reduce: EdgeRHS
+			nil,        // empty
+			reduce(12), // ;, reduce: EdgeRHS
+			reduce(12), // id, reduce: EdgeRHS
+			nil,        // [
+			nil,        // ]
+			reduce(12), // edgearrow, reduce: EdgeRHS
+			reduce(12), // edge_attr_open, reduce: EdgeRHS
+			nil,        // edge_attr_close
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S21
@@ -416,15 +416,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(31), // id
+			shift(32), // ;
+			reduce(5), // id, reduce: OptSep
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			shift(36), // edge_attr_close
-			nil,       // =
+			reduce(5), // edge_attr_close, reduce: OptSep
 			nil,       // ,
+			shift(33), // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -435,15 +435,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(38), // id
+			nil,       // ;
+			shift(34), // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
+			shift(35), // edge_attr_close
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -451,39 +451,39 @@ var actionTab = actionTable{
 	actionRow{ // S23
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			nil,        // ␚
-			nil,        // empty
-			reduce(25), // id, reduce: AttrItems
-			nil,        // [
-			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			reduce(25), // edge_attr_close, reduce: AttrItems
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(37), // id
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S24
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			nil,       // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			shift(28), // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(21), // id, reduce: AttrItems
+			nil,        // [
+			nil,        // ]
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(21), // edge_attr_close, reduce: AttrItems
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S25
@@ -492,15 +492,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(24), // id
+			nil,       // ;
+			shift(28), // id
 			nil,       // [
 			shift(39), // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -509,17 +509,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			reduce(8), // ␚, reduce: NodeDecl
+			nil,       // ␚
 			nil,       // empty
-			reduce(8), // id, reduce: NodeDecl
+			nil,       // ;
+			reduce(6), // id, reduce: OptSep
 			nil,       // [
-			nil,       // ]
-			reduce(8), // ;, reduce: NodeDecl
+			reduce(6), // ], reduce: OptSep
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -530,17 +530,17 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(24), // id
-			nil,       // [
-			shift(41), // ]
 			nil,       // ;
+			shift(40), // id
+			nil,       // [
+			nil,       // ]
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,       // =
+			shift(42), // numeric_literal
+			shift(43), // quoted_string
 		},
 	},
 	actionRow{ // S28
@@ -549,34 +549,34 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(42), // id
+			nil,       // ;
+			nil,       // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
-			shift(44), // numeric_literal
-			shift(45), // quoted_string
+			shift(27), // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S29
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			reduce(5), // ␚, reduce: NodeDecl
+			reduce(7), // ␚, reduce: NodeDecl
 			nil,       // empty
-			reduce(5), // id, reduce: NodeDecl
+			reduce(7), // ;, reduce: NodeDecl
+			reduce(7), // id, reduce: NodeDecl
 			nil,       // [
 			nil,       // ]
-			reduce(5), // ;, reduce: NodeDecl
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -587,15 +587,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(26), // id, reduce: AttrItems
-			nil,        // [
-			reduce(26), // ], reduce: AttrItems
 			nil,        // ;
+			reduce(22), // id, reduce: AttrItems
+			nil,        // [
+			reduce(22), // ], reduce: AttrItems
 			nil,        // edgearrow
 			nil,        // edge_attr_open
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -606,15 +606,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			nil,       // id
+			nil,       // ;
+			shift(34), // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			shift(35), // =
+			shift(45), // edge_attr_close
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -625,15 +625,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(31), // id
+			nil,       // ;
+			reduce(6), // id, reduce: OptSep
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			shift(46), // edge_attr_close
-			nil,       // =
+			reduce(6), // edge_attr_close, reduce: OptSep
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -644,17 +644,17 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(31), // id
+			nil,       // ;
+			shift(46), // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
-			shift(48), // edge_attr_close
-			nil,       // =
+			nil,       // edge_attr_close
 			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,       // =
+			shift(48), // numeric_literal
+			shift(49), // quoted_string
 		},
 	},
 	actionRow{ // S34
@@ -663,15 +663,15 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
-			shift(49), // id
+			nil,       // ;
+			nil,       // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			shift(33), // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -682,53 +682,53 @@ var actionTab = actionTable{
 			nil,       // INVALID
 			nil,       // ␚
 			nil,       // empty
+			nil,       // ;
 			shift(50), // id
 			nil,       // [
 			nil,       // ]
-			nil,       // ;
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
-			shift(52), // numeric_literal
-			shift(53), // quoted_string
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S36
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(54), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(22), // id, reduce: AttrItems
+			nil,        // [
+			nil,        // ]
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(22), // edge_attr_close, reduce: AttrItems
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S37
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			nil,        // ␚
+			reduce(13), // ␚, reduce: EdgeRHS
 			nil,        // empty
-			reduce(26), // id, reduce: AttrItems
+			reduce(13), // ;, reduce: EdgeRHS
+			reduce(13), // id, reduce: EdgeRHS
 			nil,        // [
 			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			reduce(26), // edge_attr_close, reduce: AttrItems
-			nil,        // =
+			reduce(13), // edgearrow, reduce: EdgeRHS
+			reduce(13), // edge_attr_open, reduce: EdgeRHS
+			nil,        // edge_attr_close
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -736,37 +736,37 @@ var actionTab = actionTable{
 	actionRow{ // S38
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(13), // ␚, reduce: EdgeRHS
-			nil,        // empty
-			reduce(13), // id, reduce: EdgeRHS
-			nil,        // [
-			nil,        // ]
-			reduce(13), // ;, reduce: EdgeRHS
-			reduce(13), // edgearrow, reduce: EdgeRHS
-			reduce(13), // edge_attr_open, reduce: EdgeRHS
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(28), // id
+			nil,       // [
+			shift(51), // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S39
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,       // INVALID
-			reduce(6), // ␚, reduce: NodeDecl
+			reduce(9), // ␚, reduce: NodeDecl
 			nil,       // empty
-			reduce(6), // id, reduce: NodeDecl
+			reduce(9), // ;, reduce: NodeDecl
+			reduce(9), // id, reduce: NodeDecl
 			nil,       // [
 			nil,       // ]
-			reduce(6), // ;, reduce: NodeDecl
 			nil,       // edgearrow
 			nil,       // edge_attr_open
 			nil,       // edge_attr_close
-			nil,       // =
 			nil,       // ,
+			nil,       // =
 			nil,       // numeric_literal
 			nil,       // quoted_string
 		},
@@ -774,39 +774,39 @@ var actionTab = actionTable{
 	actionRow{ // S40
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(24), // id
-			nil,       // [
-			shift(55), // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(26), // id, reduce: AttrVal
+			nil,        // [
+			reduce(26), // ], reduce: AttrVal
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			nil,        // edge_attr_close
+			reduce(26), // ,, reduce: AttrVal
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S41
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			reduce(9), // ␚, reduce: NodeDecl
-			nil,       // empty
-			reduce(9), // id, reduce: NodeDecl
-			nil,       // [
-			nil,       // ]
-			reduce(9), // ;, reduce: NodeDecl
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(23), // id, reduce: OptAttrSep
+			nil,        // [
+			reduce(23), // ], reduce: OptAttrSep
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			nil,        // edge_attr_close
+			shift(53),  // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S42
@@ -815,15 +815,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(29), // id, reduce: AttrVal
-			nil,        // [
-			reduce(29), // ], reduce: AttrVal
 			nil,        // ;
+			reduce(27), // id, reduce: AttrVal
+			nil,        // [
+			reduce(27), // ], reduce: AttrVal
 			nil,        // edgearrow
 			nil,        // edge_attr_open
 			nil,        // edge_attr_close
+			reduce(27), // ,, reduce: AttrVal
 			nil,        // =
-			reduce(29), // ,, reduce: AttrVal
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -834,15 +834,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(27), // id, reduce: Attr
-			nil,        // [
-			reduce(27), // ], reduce: Attr
 			nil,        // ;
+			reduce(28), // id, reduce: AttrVal
+			nil,        // [
+			reduce(28), // ], reduce: AttrVal
 			nil,        // edgearrow
 			nil,        // edge_attr_open
 			nil,        // edge_attr_close
+			reduce(28), // ,, reduce: AttrVal
 			nil,        // =
-			shift(56),  // ,
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -850,113 +850,113 @@ var actionTab = actionTable{
 	actionRow{ // S44
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			nil,        // ␚
-			nil,        // empty
-			reduce(30), // id, reduce: AttrVal
-			nil,        // [
-			reduce(30), // ], reduce: AttrVal
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			reduce(30), // ,, reduce: AttrVal
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(34), // id
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			shift(54), // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S45
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			nil,        // ␚
-			nil,        // empty
-			reduce(31), // id, reduce: AttrVal
-			nil,        // [
-			reduce(31), // ], reduce: AttrVal
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
-			reduce(31), // ,, reduce: AttrVal
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(55), // id
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S46
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(57), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(26), // id, reduce: AttrVal
+			nil,        // [
+			nil,        // ]
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(26), // edge_attr_close, reduce: AttrVal
+			reduce(26), // ,, reduce: AttrVal
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S47
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(31), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			shift(58), // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(23), // id, reduce: OptAttrSep
+			nil,        // [
+			nil,        // ]
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(23), // edge_attr_close, reduce: OptAttrSep
+			shift(57),  // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S48
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(59), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			nil,        // ␚
+			nil,        // empty
+			nil,        // ;
+			reduce(27), // id, reduce: AttrVal
+			nil,        // [
+			nil,        // ]
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(27), // edge_attr_close, reduce: AttrVal
+			reduce(27), // ,, reduce: AttrVal
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S49
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			reduce(15), // ␚, reduce: EdgeRHS
+			nil,        // ␚
 			nil,        // empty
-			reduce(15), // id, reduce: EdgeRHS
+			nil,        // ;
+			reduce(28), // id, reduce: AttrVal
 			nil,        // [
 			nil,        // ]
-			reduce(15), // ;, reduce: EdgeRHS
-			reduce(15), // edgearrow, reduce: EdgeRHS
-			reduce(15), // edge_attr_open, reduce: EdgeRHS
-			nil,        // edge_attr_close
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(28), // edge_attr_close, reduce: AttrVal
+			reduce(28), // ,, reduce: AttrVal
 			nil,        // =
-			nil,        // ,
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -965,17 +965,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			nil,        // ␚
+			reduce(14), // ␚, reduce: EdgeRHS
 			nil,        // empty
-			reduce(29), // id, reduce: AttrVal
+			reduce(14), // ;, reduce: EdgeRHS
+			reduce(14), // id, reduce: EdgeRHS
 			nil,        // [
 			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			reduce(29), // edge_attr_close, reduce: AttrVal
+			reduce(14), // edgearrow, reduce: EdgeRHS
+			reduce(14), // edge_attr_open, reduce: EdgeRHS
+			nil,        // edge_attr_close
+			nil,        // ,
 			nil,        // =
-			reduce(29), // ,, reduce: AttrVal
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -983,20 +983,20 @@ var actionTab = actionTable{
 	actionRow{ // S51
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			nil,        // ␚
-			nil,        // empty
-			reduce(27), // id, reduce: Attr
-			nil,        // [
-			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			reduce(27), // edge_attr_close, reduce: Attr
-			nil,        // =
-			shift(60),  // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			reduce(8), // ␚, reduce: NodeDecl
+			nil,       // empty
+			reduce(8), // ;, reduce: NodeDecl
+			reduce(8), // id, reduce: NodeDecl
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S52
@@ -1005,15 +1005,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(30), // id, reduce: AttrVal
-			nil,        // [
-			nil,        // ]
 			nil,        // ;
+			reduce(25), // id, reduce: Attr
+			nil,        // [
+			reduce(25), // ], reduce: Attr
 			nil,        // edgearrow
 			nil,        // edge_attr_open
-			reduce(30), // edge_attr_close, reduce: AttrVal
+			nil,        // edge_attr_close
+			nil,        // ,
 			nil,        // =
-			reduce(30), // ,, reduce: AttrVal
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -1024,15 +1024,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(31), // id, reduce: AttrVal
-			nil,        // [
-			nil,        // ]
 			nil,        // ;
+			reduce(24), // id, reduce: OptAttrSep
+			nil,        // [
+			reduce(24), // ], reduce: OptAttrSep
 			nil,        // edgearrow
 			nil,        // edge_attr_open
-			reduce(31), // edge_attr_close, reduce: AttrVal
+			nil,        // edge_attr_close
+			nil,        // ,
 			nil,        // =
-			reduce(31), // ,, reduce: AttrVal
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -1040,39 +1040,39 @@ var actionTab = actionTable{
 	actionRow{ // S54
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(14), // ␚, reduce: EdgeRHS
-			nil,        // empty
-			reduce(14), // id, reduce: EdgeRHS
-			nil,        // [
-			nil,        // ]
-			reduce(14), // ;, reduce: EdgeRHS
-			reduce(14), // edgearrow, reduce: EdgeRHS
-			reduce(14), // edge_attr_open, reduce: EdgeRHS
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
+			nil,       // INVALID
+			nil,       // ␚
+			nil,       // empty
+			nil,       // ;
+			shift(58), // id
+			nil,       // [
+			nil,       // ]
+			nil,       // edgearrow
+			nil,       // edge_attr_open
+			nil,       // edge_attr_close
+			nil,       // ,
+			nil,       // =
+			nil,       // numeric_literal
+			nil,       // quoted_string
 		},
 	},
 	actionRow{ // S55
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			reduce(7), // ␚, reduce: NodeDecl
-			nil,       // empty
-			reduce(7), // id, reduce: NodeDecl
-			nil,       // [
-			nil,       // ]
-			reduce(7), // ;, reduce: NodeDecl
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
+			nil,        // INVALID
+			reduce(15), // ␚, reduce: EdgeRHS
+			nil,        // empty
+			reduce(15), // ;, reduce: EdgeRHS
+			reduce(15), // id, reduce: EdgeRHS
+			nil,        // [
+			nil,        // ]
+			reduce(15), // edgearrow, reduce: EdgeRHS
+			reduce(15), // edge_attr_open, reduce: EdgeRHS
+			nil,        // edge_attr_close
+			nil,        // ,
+			nil,        // =
+			nil,        // numeric_literal
+			nil,        // quoted_string
 		},
 	},
 	actionRow{ // S56
@@ -1081,15 +1081,15 @@ var actionTab = actionTable{
 			nil,        // INVALID
 			nil,        // ␚
 			nil,        // empty
-			reduce(28), // id, reduce: Attr
-			nil,        // [
-			reduce(28), // ], reduce: Attr
 			nil,        // ;
+			reduce(25), // id, reduce: Attr
+			nil,        // [
+			nil,        // ]
 			nil,        // edgearrow
 			nil,        // edge_attr_open
-			nil,        // edge_attr_close
-			nil,        // =
+			reduce(25), // edge_attr_close, reduce: Attr
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -1098,17 +1098,17 @@ var actionTab = actionTable{
 		canRecover: false,
 		actions: [numSymbols]action{
 			nil,        // INVALID
-			reduce(17), // ␚, reduce: EdgeRHS
+			nil,        // ␚
 			nil,        // empty
-			reduce(17), // id, reduce: EdgeRHS
+			nil,        // ;
+			reduce(24), // id, reduce: OptAttrSep
 			nil,        // [
 			nil,        // ]
-			reduce(17), // ;, reduce: EdgeRHS
-			reduce(17), // edgearrow, reduce: EdgeRHS
-			reduce(17), // edge_attr_open, reduce: EdgeRHS
-			nil,        // edge_attr_close
-			nil,        // =
+			nil,        // edgearrow
+			nil,        // edge_attr_open
+			reduce(24), // edge_attr_close, reduce: OptAttrSep
 			nil,        // ,
+			nil,        // =
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
@@ -1116,75 +1116,18 @@ var actionTab = actionTable{
 	actionRow{ // S58
 		canRecover: false,
 		actions: [numSymbols]action{
-			nil,       // INVALID
-			nil,       // ␚
-			nil,       // empty
-			shift(61), // id
-			nil,       // [
-			nil,       // ]
-			nil,       // ;
-			nil,       // edgearrow
-			nil,       // edge_attr_open
-			nil,       // edge_attr_close
-			nil,       // =
-			nil,       // ,
-			nil,       // numeric_literal
-			nil,       // quoted_string
-		},
-	},
-	actionRow{ // S59
-		canRecover: false,
-		actions: [numSymbols]action{
 			nil,        // INVALID
 			reduce(16), // ␚, reduce: EdgeRHS
 			nil,        // empty
+			reduce(16), // ;, reduce: EdgeRHS
 			reduce(16), // id, reduce: EdgeRHS
 			nil,        // [
 			nil,        // ]
-			reduce(16), // ;, reduce: EdgeRHS
 			reduce(16), // edgearrow, reduce: EdgeRHS
 			reduce(16), // edge_attr_open, reduce: EdgeRHS
 			nil,        // edge_attr_close
-			nil,        // =
 			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
-		},
-	},
-	actionRow{ // S60
-		canRecover: false,
-		actions: [numSymbols]action{
-			nil,        // INVALID
-			nil,        // ␚
-			nil,        // empty
-			reduce(28), // id, reduce: Attr
-			nil,        // [
-			nil,        // ]
-			nil,        // ;
-			nil,        // edgearrow
-			nil,        // edge_attr_open
-			reduce(28), // edge_attr_close, reduce: Attr
 			nil,        // =
-			nil,        // ,
-			nil,        // numeric_literal
-			nil,        // quoted_string
-		},
-	},
-	actionRow{ // S61
-		canRecover: false,
-		actions: [numSymbols]action{
-			nil,        // INVALID
-			reduce(18), // ␚, reduce: EdgeRHS
-			nil,        // empty
-			reduce(18), // id, reduce: EdgeRHS
-			nil,        // [
-			nil,        // ]
-			reduce(18), // ;, reduce: EdgeRHS
-			reduce(18), // edgearrow, reduce: EdgeRHS
-			reduce(18), // edge_attr_open, reduce: EdgeRHS
-			nil,        // edge_attr_close
-			nil,        // =
-			nil,        // ,
 			nil,        // numeric_literal
 			nil,        // quoted_string
 		},
