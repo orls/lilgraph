@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 	"slices"
+	"strings"
 
 	"github.com/orls/lilgraph/internal/ast"
 	"github.com/orls/lilgraph/internal/gocc/lexer"
@@ -23,6 +24,7 @@ var (
 	ErrLoop         = errors.New("cannot create edge from a node to itself")
 	ErrBadParseType = errors.New("unexpected parser result type")
 	ErrTypeChange   = errors.New("nodes cannot be redefined with a different type")
+	ErrTypeInAttrs  = errors.New("attributes called 'type' aren't allowed to avoid ambiguity")
 	ErrCyclic       = errors.New("graph is cyclic")
 )
 
@@ -250,25 +252,25 @@ type attr struct {
 	value string
 }
 
-// type Attrs struct {
-// 	attrs []attr
-// }
-
 func (c *common) Type() string {
 	return c.typ
 }
 
-func (c *common) SetAttr(key, value string) {
+func (c *common) SetAttr(key, value string) error {
+	if strings.ToLower(key) == "type" {
+		return ErrTypeInAttrs
+	}
 	if c.attrs == nil {
 		c.attrs = []attr{}
 	}
 	for i, attr := range c.attrs {
 		if attr.key == key {
 			c.attrs[i].value = value
-			return
+			return nil
 		}
 	}
 	c.attrs = append(c.attrs, attr{key: key, value: value})
+	return nil
 }
 
 func (c *common) GetAttr(key string) (string, bool) {
@@ -363,7 +365,12 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 				}
 				return nil, err
 			}
-			updateAttrs(&n.common, item.Attrs)
+			if err := updateAttrs(&n.common, item.Attrs); err != nil {
+				if errors.Is(err, ErrTypeInAttrs) {
+					return nil, fmt.Errorf("%w; consider using a node type decl", err)
+				}
+				return nil, err
+			}
 
 		case *ast.EdgeChain:
 			from, err := upsertNodeFromAst(item.From, nil, "")
@@ -390,7 +397,12 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 				if !existed {
 					e.pos = &step.Pos
 				}
-				updateAttrs(&e.common, step.Attrs)
+				if err := updateAttrs(&e.common, step.Attrs); err != nil {
+					if errors.Is(err, ErrTypeInAttrs) {
+						return nil, fmt.Errorf("%w; consider using an edge type decl", err)
+					}
+					return nil, err
+				}
 				from = to
 			}
 		}
@@ -399,10 +411,16 @@ func buildFromAst(astGraph *ast.Graph) (*Lilgraph, error) {
 	return g, nil
 }
 
-func updateAttrs(obj *common, astAttrs ast.Attrs) {
+func updateAttrs(obj *common, astAttrs ast.Attrs) error {
 	for _, astAttr := range astAttrs {
-		obj.SetAttr(astAttr.Key, astAttr.Value)
+		if err := obj.SetAttr(astAttr.Key, astAttr.Value); err != nil {
+			if errors.Is(err, ErrTypeInAttrs) {
+				return fmt.Errorf("%w (at %s)", err, astAttr.Pos)
+			}
+			return err
+		}
 	}
+	return nil
 }
 
 func lexicalTopoSort(nodes []*Node) error {

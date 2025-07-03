@@ -257,6 +257,20 @@ func TestNoNodeTypeChange(t *testing.T) {
 	}
 }
 
+func TestNoExplicitTypeAttrs(t *testing.T) {
+	cases := []string{
+		"bad/explicit-type-in-attrs.node.lilgraph",
+		"bad/explicit-type-in-attrs.edge.lilgraph",
+	}
+	for _, inputPath := range cases {
+		input := readFsFile(t, testCases, inputPath)
+		_, err := lilgraph.Parse(input)
+		if !errors.Is(err, lilgraph.ErrTypeInAttrs) {
+			t.Fatalf("expected type-change case to fail with ErrTypeInAttrs,  got err=%v", err)
+		}
+	}
+}
+
 func TestCycleDetection(t *testing.T) {
 	cases := []string{
 		"bad/cyclic-1.lilgraph",

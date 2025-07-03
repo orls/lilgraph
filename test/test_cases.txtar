@@ -88,6 +88,12 @@ A
 A [sometype]
 A [othertype] // should fail!
 
+-- bad/explicit-type-in-attrs.node.lilgraph --
+A [type=sometype] // To avoid footguns, don't allow explicit 'type'!
+
+-- bad/explicit-type-in-attrs.edge.lilgraph --
+A -[type=sometype]->B // To avoid footguns, don't allow explicit 'type'!
+
 -- happy/node-attrs.lilgraph --
 A []
 A [sometype]
