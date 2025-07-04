@@ -8,17 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go:
+        go_ver:
           - {id: 'stable', gosetupargs: {go-version: 'stable'}}
           - {id: 'oldstable' ,gosetupargs: {go-version: 'oldstable'}}
-          - {id: 'fromgomod', gosetupargs: {go-version-file: 'go.mod'}}
-    name: Ci w/ ${{ matrix.go.id }} sample
+          - {id: 'from-go-mod', gosetupargs: {go-version-file: 'go.mod'}}
+    name: CI w/ go version '${{ matrix.go_ver.id }}'
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup go
         uses: actions/setup-go@v5
-        with: ${{ matrix.go.gosetupargs }}
+        with: ${{ matrix.go_ver.gosetupargs }}
 
       - name: Verify dependencies
         run: go mod verify
@@ -28,3 +27,17 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+
+  # Separate job; partly for parallelism, partly to avoid any possible
+  # shenanigans with triplicate annotations etc.
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
