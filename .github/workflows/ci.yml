@@ -1,0 +1,30 @@
+on:
+  push:
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go:
+          - {id: 'stable', gosetupargs: {go-version: 'stable'}}
+          - {id: 'oldstable' ,gosetupargs: {go-version: 'oldstable'}}
+          - {id: 'fromgomod', gosetupargs: {go-version-file: 'go.mod'}}
+    name: Ci w/ ${{ matrix.go.id }} sample
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with: ${{ matrix.go.gosetupargs }}
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build
+        run: go build -v ./... 
+
+      - name: Test
+        run: go test -v ./...
